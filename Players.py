@@ -1,5 +1,7 @@
-import os
 import pygame
+
+from Projectile import Projectile
+from global_variables import *
 
 
 class Player(pygame.sprite.Sprite):
@@ -11,18 +13,27 @@ class Player(pygame.sprite.Sprite):
         self.velocity = 5
         self.image = None
         self.rect = None
+        self.all_projectiles = pygame.sprite.Group()
+        self.direction = LEFT
 
     def move_right(self):
         self.rect.x += self.velocity
+        self.direction = RIGHT
 
     def move_left(self):
         self.rect.x -= self.velocity
+        self.direction = LEFT
 
     def move_up(self):
         self.rect.y -= self.velocity
+        self.direction = UP
 
     def move_down(self):
         self.rect.y += self.velocity
+        self.direction = DOWN
+
+    def launch_projectile(self):
+        self.all_projectiles.add(Projectile(self))
 
 
 class Father(Player):
