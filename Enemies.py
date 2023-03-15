@@ -20,7 +20,7 @@ class Enemy(Alive):
 class PunchingBall(Enemy):
     def __init__(self, game, x, y):
         super().__init__(game)
-        self.image = pygame.image.load(os.path.join(CURRENT_DIRECTORY, "assets", "father.jpg"))
+        self.image = pygame.image.load(os.path.join(CURRENT_DIRECTORY, "assets", "punching_ball.jpg"))
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y

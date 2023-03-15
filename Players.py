@@ -15,9 +15,9 @@ class Alive(pygame.sprite.Sprite):
     def update_health_bar(self, surface):
         bar_color = (111, 210, 46)  # Color of health bar
         max_bar_color = (50, 50, 50)
-        bar_position = [self.rect.x, self.rect.y + (self.rect.bottom - self.rect.top),
+        bar_position = [self.rect.center[0] - SIZE_HEALTH_BAR/2, self.rect.y + (self.rect.bottom - self.rect.top),
                         SIZE_HEALTH_BAR * (self.health / self.max_health), 5]
-        max_bar_position = [self.rect.x, self.rect.y + (self.rect.bottom - self.rect.top), SIZE_HEALTH_BAR, 5]
+        max_bar_position = [self.rect.center[0] - SIZE_HEALTH_BAR/2, self.rect.y + (self.rect.bottom - self.rect.top), SIZE_HEALTH_BAR, 5]
 
         # Draw bar
         pygame.draw.rect(surface, max_bar_color, max_bar_position)
