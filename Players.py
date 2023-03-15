@@ -44,28 +44,28 @@ class Player(Alive):
     def move_right(self):
         self.direction = RIGHT
         self.rect.x += self.velocity
-        obj_collided = self.game.check_collisions(self, self.game.all_enemies)
+        obj_collided = self.game.check_collisions(self, [self.game.all_enemies, self.game.all_obstacles])
         if obj_collided:
             self.rect.right = obj_collided.rect.left
 
     def move_left(self):
         self.direction = LEFT
         self.rect.x -= self.velocity
-        obj_collided = self.game.check_collisions(self, self.game.all_enemies)
+        obj_collided = self.game.check_collisions(self, [self.game.all_enemies, self.game.all_obstacles])
         if obj_collided:
             self.rect.left = obj_collided.rect.right
 
     def move_up(self):
         self.direction = UP
         self.rect.y -= self.velocity
-        obj_collided = self.game.check_collisions(self, self.game.all_enemies)
+        obj_collided = self.game.check_collisions(self, [self.game.all_enemies, self.game.all_obstacles])
         if obj_collided:
             self.rect.top = obj_collided.rect.bottom
 
     def move_down(self):
         self.direction = DOWN
         self.rect.y += self.velocity
-        obj_collided = self.game.check_collisions(self, self.game.all_enemies)
+        obj_collided = self.game.check_collisions(self, [self.game.all_enemies, self.game.all_obstacles])
         if obj_collided:
             self.rect.bottom = obj_collided.rect.top
 

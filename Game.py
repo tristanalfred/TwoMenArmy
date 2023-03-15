@@ -2,6 +2,7 @@ import pygame
 import sys
 
 from Enemies import PunchingBall
+from Obstacles import Rock
 from Players import Father, Son
 from global_variables import *
 
@@ -15,18 +16,31 @@ class Game:
         self.father = Father(self)
         self.son = Son(self)
         self.all_enemies = pygame.sprite.Group()
+        self.all_obstacles = pygame.sprite.Group()
         self.pressed = {}
 
         self.spawn_monster(PunchingBall, SCREEN_WIDTH/2, 100)
+        self.add_obstacle(Rock, 400, 0)
+        self.add_obstacle(Rock, 400, 70)
+        self.add_obstacle(Rock, 400, 140)
+        self.add_obstacle(Rock, 400, 210)
+        self.add_obstacle(Rock, 400, 280)
 
     def spawn_monster(self, enemy_type, x, y):
         enemy = enemy_type(self, x, y)
         self.all_enemies.add(enemy)
 
-    def check_collisions(self, sprite, group):
-        for obj in group:
-            if pygame.sprite.collide_mask(sprite, obj):
-                return obj
+    def add_obstacle(self, obstacle_type, x, y):
+        obstacle = obstacle_type(x, y)
+        self.all_obstacles.add(obstacle)
+
+    def check_collisions(self, sprite, groups):
+        if not isinstance(groups, list):
+            groups = [groups]
+        for group in groups:
+            for obj in group:
+                if pygame.sprite.collide_mask(sprite, obj):
+                    return obj
         return False
 
     def handling_events(self):
@@ -97,6 +111,8 @@ class Game:
 
         self.father.all_projectiles.draw(self.screen)
         self.son.all_projectiles.draw(self.screen)
+
+        self.all_obstacles.draw(self.screen)
 
         self.all_enemies.draw(self.screen)
         for enemy in self.all_enemies:

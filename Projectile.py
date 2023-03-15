@@ -27,9 +27,10 @@ class Projectile(pygame.sprite.Sprite):
             self.rect.y += self.velocity
 
         # Inflict damage to the enemy and disappears
-        obj_collided = self.game.check_collisions(self, self.game.all_enemies)
+        obj_collided = self.game.check_collisions(self, [self.game.all_enemies, self.game.all_obstacles])
         if obj_collided:
-            obj_collided.damage_incured(self.player.attack)
+            if obj_collided not in self.game.all_obstacles:
+                obj_collided.damage_incured(self.player.attack)
             self.remove()
 
         # Delete the projectile if he left the screen
