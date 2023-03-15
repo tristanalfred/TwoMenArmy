@@ -2,7 +2,7 @@ import pygame
 import sys
 
 from Enemies import PunchingBall
-from Obstacles import Rock
+from Obstacles import Door, Rock, Levier
 from Players import Father, Son
 from global_variables import *
 
@@ -25,13 +25,15 @@ class Game:
         self.add_obstacle(Rock, 400, 140)
         self.add_obstacle(Rock, 400, 210)
         self.add_obstacle(Rock, 400, 280)
+        self.add_obstacle(Door, 400, 350)
+        self.add_obstacle(Levier, 200, 450)
 
     def spawn_monster(self, enemy_type, x, y):
         enemy = enemy_type(self, x, y)
         self.all_enemies.add(enemy)
 
     def add_obstacle(self, obstacle_type, x, y):
-        obstacle = obstacle_type(x, y)
+        obstacle = obstacle_type(self, x, y)
         self.all_obstacles.add(obstacle)
 
     def check_collisions(self, sprite, groups):

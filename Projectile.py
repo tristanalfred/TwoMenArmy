@@ -26,7 +26,7 @@ class Projectile(pygame.sprite.Sprite):
         elif self.direction == DOWN:
             self.rect.y += self.velocity
 
-        # Inflict damage to the enemy and disappears
+        # Destroys the projectile on impact, and inflicts damage if it's an enemy
         obj_collided = self.game.check_collisions(self, [self.game.all_enemies, self.game.all_obstacles])
         if obj_collided:
             if obj_collided not in self.game.all_obstacles:
