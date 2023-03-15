@@ -8,7 +8,7 @@ pygame.init()
 
 # Generate the window of our game
 pygame.display.set_caption("TwoMenArmy")
-screen = pygame.display.set_mode((1080, 720))
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 background = pygame.image.load(
             os.path.join(CURRENT_DIRECTORY, "assets", "background.png"))  # os.path.join allow windows and linux paths

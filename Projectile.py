@@ -7,10 +7,10 @@ class Projectile(pygame.sprite.Sprite):
     def __init__(self, player):
         super().__init__()
         self.velocity = 10
-        self.image = pygame.image.load(os.path.join(os.getcwd(), "assets", "projectile.png"))
+        self.image = pygame.image.load(os.path.join(CURRENT_DIRECTORY, "assets", "projectile.png"))
         self.rect = self.image.get_rect()
-        self.rect.x = player.rect.x
-        self.rect.y = player.rect.y
+        self.rect.x = player.rect.center[0] - self.rect.center[0]
+        self.rect.y = player.rect.center[1] - self.rect.center[1]
         self.direction = player.direction
         self.player = player
 
@@ -25,7 +25,8 @@ class Projectile(pygame.sprite.Sprite):
             self.rect.y += self.velocity
 
         # Delete the projectile if he left the screen
-        if self.rect.x - self.rect.x < 0 or self.rect.x > 1080 or self.rect.y - self.rect.y < 0 or self.rect.y > 720:
+        if self.rect.x - self.rect.x < 0 or self.rect.x > SCREEN_WIDTH \
+                or self.rect.y - self.rect.y < 0 or self.rect.y > SCREEN_HEIGHT:
             self.remove()
 
     def remove(self):

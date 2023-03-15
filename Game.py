@@ -1,5 +1,7 @@
 import pygame
+import sys
 
+from Enemies import PunchingBall
 from Players import Father, Son
 from global_variables import *
 
@@ -10,16 +12,42 @@ class Game:
         self.running = True
         self.clock = pygame.time.Clock()  # FPS management
         self.background = background
-        self.father = Father()
-        self.son = Son()
+        self.father = Father(self)
+        self.son = Son(self)
+        self.all_enemies = pygame.sprite.Group()
         self.pressed = {}
 
+        self.spawn_monster(PunchingBall, SCREEN_WIDTH/2, 100)
+
+    def spawn_monster(self, enemy_type, x, y):
+        enemy = enemy_type(x, y)
+        self.all_enemies.add(enemy)
+
+    def check_collisions(self, sprite, group):
+        for obj in group:
+            if pygame.sprite.collide_mask(sprite, obj):
+                if sprite.direction == RIGHT:
+                    sprite.rect.right = obj.rect.left
+                elif sprite.direction == LEFT:
+                    sprite.rect.left = obj.rect.right
+                elif sprite.direction == UP:
+                    sprite.rect.top = obj.rect.bottom
+                    # return True
+                elif sprite.direction == DOWN:
+                    sprite.rect.bottom = obj.rect.top
+                    # return True
+        return False
+
     def handling_events(self):
+        """
+        Get all the events (ex : key pressed)
+        """
         for event in pygame.event.get():
             # Close the game
             if event.type == pygame.QUIT:
                 self.running = False
                 pygame.quit()
+                sys.exit()
 
             elif event.type == pygame.KEYDOWN:
                 # Start of continuous actions (like projectile launch)
@@ -36,6 +64,9 @@ class Game:
                 self.pressed[event.key] = False
 
     def update(self):
+        """
+        Update the state of the game and entities (ex : move a player)
+        """
         # Check the Father moves
         if self.pressed.get(pygame.K_q) and self.father.rect.x > 0:
             self.father.move_left()
@@ -57,12 +88,11 @@ class Game:
             self.son.move_down()
 
     def display(self):
+        """
+        Display all the entities on the screen
+        """
         # Apply the background
         self.screen.blit(self.background, (0, 0))
-
-        # Apply players images
-        self.screen.blit(self.father.image, self.father.rect)
-        self.screen.blit(self.son.image, self.son.rect)
 
         for projectile in self.father.all_projectiles:
             projectile.move()
@@ -71,6 +101,12 @@ class Game:
         for projectile in self.son.all_projectiles:
             projectile.move()
         self.son.all_projectiles.draw(self.screen)
+
+        self.all_enemies.draw(self.screen)
+
+        # Apply players images
+        self.screen.blit(self.father.image, self.father.rect)
+        self.screen.blit(self.son.image, self.son.rect)
 
         pygame.display.flip()
 

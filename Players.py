@@ -5,8 +5,10 @@ from global_variables import *
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, game):
         super().__init__()
+        self.game = game
+        self.weight = 10
         self.health = 100
         self.max_health = 100
         self.attack = 10
@@ -17,37 +19,42 @@ class Player(pygame.sprite.Sprite):
         self.direction = LEFT
 
     def move_right(self):
-        self.rect.x += self.velocity
-        self.direction = RIGHT
+        if not self.game.check_collisions(self, self.game.all_enemies):
+            self.rect.x += self.velocity
+            self.direction = RIGHT
 
     def move_left(self):
-        self.rect.x -= self.velocity
-        self.direction = LEFT
+        if not self.game.check_collisions(self, self.game.all_enemies):
+            self.rect.x -= self.velocity
+            self.direction = LEFT
 
     def move_up(self):
-        self.rect.y -= self.velocity
-        self.direction = UP
+        if not self.game.check_collisions(self, self.game.all_enemies):
+            self.rect.y -= self.velocity
+            self.direction = UP
 
     def move_down(self):
-        self.rect.y += self.velocity
-        self.direction = DOWN
+        if not self.game.check_collisions(self, self.game.all_enemies):
+            self.rect.y += self.velocity
+            self.direction = DOWN
 
     def launch_projectile(self):
         self.all_projectiles.add(Projectile(self))
 
 
 class Father(Player):
-    def __init__(self):
-        super().__init__()
-        self.image = pygame.image.load(os.path.join(os.getcwd(), "assets", "father.jpg"))
+    def __init__(self, game):
+        super().__init__(game)
+        self.image = pygame.image.load(os.path.join(CURRENT_DIRECTORY, "assets", "father.jpg"))
         self.rect = self.image.get_rect()
         self.rect.x = 200
         self.rect.y = 400
 
 
 class Son(Player):
-    def __init__(self):
-        super().__init__()
-        self.image = pygame.image.load(os.path.join(os.getcwd(), "assets", "son.jpg"))
+    def __init__(self, game):
+        super().__init__(game)
+        self.image = pygame.image.load(os.path.join(CURRENT_DIRECTORY, "assets", "son.jpg"))
         self.rect = self.image.get_rect()
+        self.weight = 8
 

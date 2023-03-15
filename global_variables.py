@@ -2,6 +2,8 @@ import os
 
 
 CURRENT_DIRECTORY = os.getcwd()
+SCREEN_WIDTH = 1080
+SCREEN_HEIGHT = 720
 FPS = 60
 LEFT = "LEFT"
 RIGHT = "RIGHT"
