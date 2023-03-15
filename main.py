@@ -18,3 +18,4 @@ background = pygame.image.load(
 game = Game(screen, background)
 game.run()
 pygame.quit()
+ # toto
