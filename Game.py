@@ -20,22 +20,13 @@ class Game:
         self.spawn_monster(PunchingBall, SCREEN_WIDTH/2, 100)
 
     def spawn_monster(self, enemy_type, x, y):
-        enemy = enemy_type(x, y)
+        enemy = enemy_type(self, x, y)
         self.all_enemies.add(enemy)
 
     def check_collisions(self, sprite, group):
         for obj in group:
             if pygame.sprite.collide_mask(sprite, obj):
-                if sprite.direction == RIGHT:
-                    sprite.rect.right = obj.rect.left
-                elif sprite.direction == LEFT:
-                    sprite.rect.left = obj.rect.right
-                elif sprite.direction == UP:
-                    sprite.rect.top = obj.rect.bottom
-                    # return True
-                elif sprite.direction == DOWN:
-                    sprite.rect.bottom = obj.rect.top
-                    # return True
+                return obj
         return False
 
     def handling_events(self):
@@ -87,6 +78,16 @@ class Game:
         elif self.pressed.get(pygame.K_DOWN) and self.son.rect.y < self.screen.get_height() - self.son.rect.height:
             self.son.move_down()
 
+        for projectile in self.father.all_projectiles:
+            projectile.move()
+
+        for projectile in self.son.all_projectiles:
+            projectile.move()
+
+        for enemy in self.all_enemies:
+            if enemy.health <= 0:
+                self.all_enemies.remove(enemy)
+
     def display(self):
         """
         Display all the entities on the screen
@@ -94,19 +95,19 @@ class Game:
         # Apply the background
         self.screen.blit(self.background, (0, 0))
 
-        for projectile in self.father.all_projectiles:
-            projectile.move()
         self.father.all_projectiles.draw(self.screen)
-
-        for projectile in self.son.all_projectiles:
-            projectile.move()
         self.son.all_projectiles.draw(self.screen)
 
         self.all_enemies.draw(self.screen)
+        for enemy in self.all_enemies:
+            enemy.update_health_bar(self.screen)
 
         # Apply players images
         self.screen.blit(self.father.image, self.father.rect)
         self.screen.blit(self.son.image, self.son.rect)
+
+        self.father.update_health_bar(self.screen)
+        self.son.update_health_bar(self.screen)
 
         pygame.display.flip()
 
@@ -114,7 +115,5 @@ class Game:
         while self.running:
             self.handling_events()
             self.update()
-            if self.running:
-                self.display()
-
+            self.display()
             self.clock.tick(FPS)
