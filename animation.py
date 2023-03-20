@@ -51,7 +51,7 @@ allowed_animations = {
     }
 }
 
-directions = [LEFT, LEFT_UP, UP, RIGHT_UP, RIGHT, RIGHT_DOWN, DOWN, LEFT_DOWN]
+directions = [LEFT, LEFT_TOP, TOP, RIGHT_TOP, RIGHT, RIGHTBOTTOM, DOWN, LEFT_BOTTOM]
 
 animations = {}
 

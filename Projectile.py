@@ -21,7 +21,7 @@ class Projectile(pygame.sprite.Sprite):
             self.rect.x -= self.velocity
         elif RIGHT in self.direction:
             self.rect.x += self.velocity
-        if UP in self.direction:
+        if TOP in self.direction:
             self.rect.y -= self.velocity
         elif DOWN in self.direction:
             self.rect.y += self.velocity

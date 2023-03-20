@@ -40,7 +40,7 @@ class Player(Alive):
         self.rect = None
         self.all_projectiles = pygame.sprite.Group()
         self.direction = RIGHT
-        self.controls = {UP: None, DOWN: None, LEFT: None, RIGHT: None, "attack": None}
+        self.controls = {TOP: None, DOWN: None, LEFT: None, RIGHT: None, "attack": None}
 
     def move(self):
         updated_direction = ""
@@ -51,8 +51,8 @@ class Player(Alive):
         elif self.game.pressed.get(self.controls[RIGHT]) and self.rect.x < self.game.screen.get_width() - self.rect.width:
             updated_direction += RIGHT
             self.move_right()
-        if self.game.pressed.get(self.controls[UP]) and self.rect.y > 0:
-            updated_direction += UP
+        if self.game.pressed.get(self.controls[TOP]) and self.rect.y > 0:
+            updated_direction += TOP
             self.move_up()
         elif self.game.pressed.get(self.controls[DOWN]) and self.rect.y < self.game.screen.get_height() - self.rect.height:
             updated_direction += DOWN
@@ -95,7 +95,7 @@ class Father(Player):
         self.rect = self.image.get_rect()
         self.rect.x = 200
         self.rect.y = 400
-        self.controls = {UP: pygame.K_z, DOWN: pygame.K_s, LEFT: pygame.K_q, RIGHT: pygame.K_d,
+        self.controls = {TOP: pygame.K_z, DOWN: pygame.K_s, LEFT: pygame.K_q, RIGHT: pygame.K_d,
                          "attack": pygame.K_SPACE}
 
 
@@ -104,5 +104,5 @@ class Son(Player):
         super().__init__(game, "son")
         self.rect = self.image.get_rect()
         self.weight = 8
-        self.controls = {UP: pygame.K_UP, DOWN: pygame.K_DOWN, LEFT: pygame.K_LEFT, RIGHT: pygame.K_RIGHT,
+        self.controls = {TOP: pygame.K_UP, DOWN: pygame.K_DOWN, LEFT: pygame.K_LEFT, RIGHT: pygame.K_RIGHT,
                          "attack": pygame.K_KP0}
