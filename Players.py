@@ -60,6 +60,9 @@ class Player(Alive):
 
         if updated_direction:
             self.direction = updated_direction
+            self.action = "move"
+        else:
+            self.action = "idle"
 
     def move_right(self):
         self.rect.x += self.velocity

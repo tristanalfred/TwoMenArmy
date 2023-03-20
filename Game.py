@@ -26,7 +26,7 @@ class Game:
         self.add_obstacle(Rock, 400, 210)
         self.add_obstacle(Rock, 400, 280)
         self.add_obstacle(Door, 400, 350)
-        self.add_obstacle(Levier, 200, 450)
+        # self.add_obstacle(Levier, 200, 450)
 
     def spawn_monster(self, enemy_type, x, y):
         enemy = enemy_type(self, x, y)
@@ -41,7 +41,8 @@ class Game:
             groups = [groups]
         for group in groups:
             for obj in group:
-                if pygame.sprite.collide_mask(sprite, obj):
+                # if pygame.sprite.collide_mask(sprite, obj):  # For pixel perfect collision
+                if sprite.rect.colliderect(obj):  # For image size collision
                     return obj
         return False
 

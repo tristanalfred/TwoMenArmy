@@ -46,8 +46,8 @@ def load_animation_images(entity_type, sprite_name, action, direction):
 
 allowed_animations = {
     "character": {
-        "father": ["move"],
-        "son": ["move"]
+        "father": ["idle", "move"],
+        "son": ["idle", "move"]
     }
 }
 
