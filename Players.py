@@ -1,12 +1,13 @@
 import pygame
+from animation import AnimateSprite
 
 from Projectile import Projectile
 from global_variables import *
 
 
-class Alive(pygame.sprite.Sprite):
-    def __init__(self, game):
-        super().__init__()
+class Alive(AnimateSprite):
+    def __init__(self, game, entity_name):
+        super().__init__(entity_name, "move", "RIGHT")
         self.game = game
         self.rect = None
         self.health = 10
@@ -28,18 +29,17 @@ class Alive(pygame.sprite.Sprite):
 
 
 class Player(Alive):
-    def __init__(self, game):
-        super().__init__(game)
+    def __init__(self, game, entity_name):
+        super().__init__(game, entity_name)
         self.game = game
         self.weight = 10
         self.health = 100
         self.max_health = 100
         self.attack = 10
         self.velocity = 5
-        self.image = None
         self.rect = None
         self.all_projectiles = pygame.sprite.Group()
-        self.direction = LEFT
+        self.direction = RIGHT
 
     def move_right(self):
         self.direction = RIGHT
@@ -75,8 +75,7 @@ class Player(Alive):
 
 class Father(Player):
     def __init__(self, game):
-        super().__init__(game)
-        self.image = pygame.image.load(os.path.join(CURRENT_DIRECTORY, "assets", "father.jpg"))
+        super().__init__(game, "father")
         self.rect = self.image.get_rect()
         self.rect.x = 200
         self.rect.y = 400
@@ -84,8 +83,7 @@ class Father(Player):
 
 class Son(Player):
     def __init__(self, game):
-        super().__init__(game)
-        self.image = pygame.image.load(os.path.join(CURRENT_DIRECTORY, "assets", "son.jpg"))
+        super().__init__(game, "son")
         self.rect = self.image.get_rect()
         self.weight = 8
 

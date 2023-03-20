@@ -94,6 +94,9 @@ class Game:
         elif self.pressed.get(pygame.K_DOWN) and self.son.rect.y < self.screen.get_height() - self.son.rect.height:
             self.son.move_down()
 
+        self.father.animate()
+        self.son.animate()
+
         for projectile in self.father.all_projectiles:
             projectile.move()
 
