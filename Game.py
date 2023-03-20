@@ -57,10 +57,10 @@ class Game:
                 sys.exit()
 
             elif event.type == pygame.KEYDOWN:
-                # Start of continuous actions (like projectile launch)
+                # Start of continuous actions (ex : move)
                 self.pressed[event.key] = True
 
-                # Non continuous actions (like projectile launch)
+                # Non continuous actions (ex : projectile launch)
                 if event.key == pygame.K_SPACE:
                     self.father.launch_projectile()
                 elif event.key == pygame.K_KP0:
@@ -74,25 +74,8 @@ class Game:
         """
         Update the state of the game and entities (ex : move a player)
         """
-        # Check the Father moves
-        if self.pressed.get(pygame.K_q) and self.father.rect.x > 0:
-            self.father.move_left()
-        elif self.pressed.get(pygame.K_d) and self.father.rect.x < self.screen.get_width() - self.father.rect.width:
-            self.father.move_right()
-        if self.pressed.get(pygame.K_z) and self.father.rect.y > 0:
-            self.father.move_up()
-        elif self.pressed.get(pygame.K_s) and self.father.rect.y < self.screen.get_height() - self.father.rect.height:
-            self.father.move_down()
-
-        # Check the Father moves
-        if self.pressed.get(pygame.K_LEFT) and self.son.rect.x > 0:
-            self.son.move_left()
-        elif self.pressed.get(pygame.K_RIGHT) and self.son.rect.x < self.screen.get_width() - self.son.rect.width:
-            self.son.move_right()
-        if self.pressed.get(pygame.K_UP) and self.son.rect.y > 0:
-            self.son.move_up()
-        elif self.pressed.get(pygame.K_DOWN) and self.son.rect.y < self.screen.get_height() - self.son.rect.height:
-            self.son.move_down()
+        self.father.move()
+        self.son.move()
 
         self.father.animate()
         self.son.animate()
