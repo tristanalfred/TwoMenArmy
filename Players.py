@@ -6,8 +6,8 @@ from global_variables import *
 
 
 class Alive(AnimateSprite):
-    def __init__(self, game, entity_name):
-        super().__init__(entity_name, "move", "RIGHT")
+    def __init__(self, game, entity_type, entity_name):
+        super().__init__(entity_type, entity_name, "move", "RIGHT")
         self.game = game
         self.rect = None
         self.health = 10
@@ -30,7 +30,7 @@ class Alive(AnimateSprite):
 
 class Player(Alive):
     def __init__(self, game, entity_name):
-        super().__init__(game, entity_name)
+        super().__init__(game, "character", entity_name)
         self.game = game
         self.weight = 10
         self.health = 100

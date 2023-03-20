@@ -6,7 +6,7 @@ from global_variables import *
 
 class Enemy(Alive):
     def __init__(self, game, entity_name):
-        super().__init__(game, entity_name)
+        super().__init__(game, "enemy", entity_name)
         self.health = 100
         self.max_health = 100
         self.attack = 10
