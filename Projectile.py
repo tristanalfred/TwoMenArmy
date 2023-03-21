@@ -17,13 +17,13 @@ class Projectile(pygame.sprite.Sprite):
         self.player = player
 
     def move(self):
-        if self.direction == LEFT:
+        if LEFT in self.direction:
             self.rect.x -= self.velocity
-        elif self.direction == RIGHT:
+        elif RIGHT in self.direction:
             self.rect.x += self.velocity
-        elif self.direction == UP:
+        if TOP in self.direction:
             self.rect.y -= self.velocity
-        elif self.direction == DOWN:
+        elif DOWN in self.direction:
             self.rect.y += self.velocity
 
         # Destroys the projectile on impact, and inflicts damage if it's an enemy
