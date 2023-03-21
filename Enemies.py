@@ -5,8 +5,8 @@ from global_variables import *
 
 
 class Enemy(Alive):
-    def __init__(self, game):
-        super().__init__(game)
+    def __init__(self, game, entity_name):
+        super().__init__(game, "enemy", entity_name)
         self.health = 100
         self.max_health = 100
         self.attack = 10
@@ -19,7 +19,7 @@ class Enemy(Alive):
 
 class PunchingBall(Enemy):
     def __init__(self, game, x, y):
-        super().__init__(game)
+        super().__init__(game, "punching_ball")
         self.image = pygame.image.load(os.path.join(CURRENT_DIRECTORY, "assets", "punching_ball.jpg"))
         self.rect = self.image.get_rect()
         self.rect.x = x

@@ -1,12 +1,13 @@
 import pygame
+from animation import AnimateSprite
 
 from Projectile import Projectile
 from global_variables import *
 
 
-class Alive(pygame.sprite.Sprite):
-    def __init__(self, game):
-        super().__init__()
+class Alive(AnimateSprite):
+    def __init__(self, game, entity_type, entity_name):
+        super().__init__(entity_type, entity_name, "move", RIGHT)
         self.game = game
         self.rect = None
         self.health = 10
@@ -28,42 +29,60 @@ class Alive(pygame.sprite.Sprite):
 
 
 class Player(Alive):
-    def __init__(self, game):
-        super().__init__(game)
+    def __init__(self, game, entity_name):
+        super().__init__(game, "character", entity_name)
         self.game = game
         self.weight = 10
         self.health = 100
         self.max_health = 100
         self.attack = 10
         self.velocity = 5
-        self.image = None
         self.rect = None
         self.all_projectiles = pygame.sprite.Group()
-        self.direction = LEFT
+        self.direction = RIGHT
+        self.controls = {TOP: None, DOWN: None, LEFT: None, RIGHT: None, "attack": None}
+
+    def move(self):
+        updated_direction = ""
+
+        if self.game.pressed.get(self.controls[LEFT]) and self.rect.x > 0:
+            updated_direction += LEFT
+            self.move_left()
+        elif self.game.pressed.get(self.controls[RIGHT]) and self.rect.x < self.game.screen.get_width() - self.rect.width:
+            updated_direction += RIGHT
+            self.move_right()
+        if self.game.pressed.get(self.controls[TOP]) and self.rect.y > 0:
+            updated_direction += TOP
+            self.move_up()
+        elif self.game.pressed.get(self.controls[DOWN]) and self.rect.y < self.game.screen.get_height() - self.rect.height:
+            updated_direction += DOWN
+            self.move_down()
+
+        if updated_direction:
+            self.direction = updated_direction
+            self.action = "move"
+        else:
+            self.action = "idle"
 
     def move_right(self):
-        self.direction = RIGHT
         self.rect.x += self.velocity
         obj_collided = self.game.check_collisions(self, [self.game.all_enemies, self.game.all_obstacles])
         if obj_collided:
             self.rect.right = obj_collided.rect.left
 
     def move_left(self):
-        self.direction = LEFT
         self.rect.x -= self.velocity
         obj_collided = self.game.check_collisions(self, [self.game.all_enemies, self.game.all_obstacles])
         if obj_collided:
             self.rect.left = obj_collided.rect.right
 
     def move_up(self):
-        self.direction = UP
         self.rect.y -= self.velocity
         obj_collided = self.game.check_collisions(self, [self.game.all_enemies, self.game.all_obstacles])
         if obj_collided:
             self.rect.top = obj_collided.rect.bottom
 
     def move_down(self):
-        self.direction = DOWN
         self.rect.y += self.velocity
         obj_collided = self.game.check_collisions(self, [self.game.all_enemies, self.game.all_obstacles])
         if obj_collided:
@@ -75,17 +94,20 @@ class Player(Alive):
 
 class Father(Player):
     def __init__(self, game):
-        super().__init__(game)
-        self.image = pygame.image.load(os.path.join(CURRENT_DIRECTORY, "assets", "father.jpg"))
-        self.rect = self.image.get_rect()
+        super().__init__(game, "father")
+        # self.rect = self.image.get_rect()
+        self.rect = pygame.Rect(0, 0, CHARACTER_SIZE, CHARACTER_SIZE)
         self.rect.x = 200
         self.rect.y = 400
+        self.controls = {TOP: pygame.K_z, DOWN: pygame.K_s, LEFT: pygame.K_q, RIGHT: pygame.K_d,
+                         "attack": pygame.K_SPACE}
 
 
 class Son(Player):
     def __init__(self, game):
-        super().__init__(game)
-        self.image = pygame.image.load(os.path.join(CURRENT_DIRECTORY, "assets", "son.jpg"))
-        self.rect = self.image.get_rect()
+        super().__init__(game, "son")
+        # self.rect = self.image.get_rect()
+        self.rect = pygame.Rect(0, 0, CHARACTER_SIZE, CHARACTER_SIZE)
         self.weight = 8
-
+        self.controls = {TOP: pygame.K_UP, DOWN: pygame.K_DOWN, LEFT: pygame.K_LEFT, RIGHT: pygame.K_RIGHT,
+                         "attack": pygame.K_KP0}
