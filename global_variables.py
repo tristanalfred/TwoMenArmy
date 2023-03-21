@@ -14,3 +14,4 @@ RIGHTBOTTOM = "rightbottom"
 DOWN = "bottom"
 LEFT_BOTTOM = "leftbottom"
 SIZE_HEALTH_BAR = 150
+CHARACTER_SIZE = 150

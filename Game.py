@@ -109,6 +109,8 @@ class Game:
 
         # Apply players images
         self.screen.blit(self.father.image, self.father.rect)
+        # pygame.draw.rect(self.screen, "yellow", pygame.Rect(self.father.rect.left, self.father.rect.top,
+        #                  self.father.rect.width, self.father.rect.height))  # Draw visual rect for characters
         self.screen.blit(self.son.image, self.son.rect)
 
         self.father.update_health_bar(self.screen)

@@ -7,7 +7,7 @@ from global_variables import *
 
 class Alive(AnimateSprite):
     def __init__(self, game, entity_type, entity_name):
-        super().__init__(entity_type, entity_name, "move", "RIGHT")
+        super().__init__(entity_type, entity_name, "move", RIGHT)
         self.game = game
         self.rect = None
         self.health = 10
@@ -95,7 +95,8 @@ class Player(Alive):
 class Father(Player):
     def __init__(self, game):
         super().__init__(game, "father")
-        self.rect = self.image.get_rect()
+        # self.rect = self.image.get_rect()
+        self.rect = pygame.Rect(0, 0, CHARACTER_SIZE, CHARACTER_SIZE)
         self.rect.x = 200
         self.rect.y = 400
         self.controls = {TOP: pygame.K_z, DOWN: pygame.K_s, LEFT: pygame.K_q, RIGHT: pygame.K_d,
@@ -105,7 +106,8 @@ class Father(Player):
 class Son(Player):
     def __init__(self, game):
         super().__init__(game, "son")
-        self.rect = self.image.get_rect()
+        # self.rect = self.image.get_rect()
+        self.rect = pygame.Rect(0, 0, CHARACTER_SIZE, CHARACTER_SIZE)
         self.weight = 8
         self.controls = {TOP: pygame.K_UP, DOWN: pygame.K_DOWN, LEFT: pygame.K_LEFT, RIGHT: pygame.K_RIGHT,
                          "attack": pygame.K_KP0}
