@@ -3,6 +3,7 @@ from animation import AnimateSprite
 
 from Projectile import Projectile
 from global_variables import *
+from tools import *
 
 
 class Alive(AnimateSprite):
@@ -66,25 +67,25 @@ class Player(Alive):
 
     def move_right(self):
         self.rect.x += self.velocity
-        obj_collided = self.game.check_collisions(self, [self.game.all_enemies, self.game.all_obstacles])
+        obj_collided = check_collisions(self, [self.game.all_enemies, self.game.all_obstacles])
         if obj_collided:
             self.rect.right = obj_collided.rect.left
 
     def move_left(self):
         self.rect.x -= self.velocity
-        obj_collided = self.game.check_collisions(self, [self.game.all_enemies, self.game.all_obstacles])
+        obj_collided = check_collisions(self, [self.game.all_enemies, self.game.all_obstacles])
         if obj_collided:
             self.rect.left = obj_collided.rect.right
 
     def move_up(self):
         self.rect.y -= self.velocity
-        obj_collided = self.game.check_collisions(self, [self.game.all_enemies, self.game.all_obstacles])
+        obj_collided = check_collisions(self, [self.game.all_enemies, self.game.all_obstacles])
         if obj_collided:
             self.rect.top = obj_collided.rect.bottom
 
     def move_down(self):
         self.rect.y += self.velocity
-        obj_collided = self.game.check_collisions(self, [self.game.all_enemies, self.game.all_obstacles])
+        obj_collided = check_collisions(self, [self.game.all_enemies, self.game.all_obstacles])
         if obj_collided:
             self.rect.bottom = obj_collided.rect.top
 
@@ -97,7 +98,7 @@ class Father(Player):
         super().__init__(game, "father")
         # self.rect = self.image.get_rect()
         self.rect = pygame.Rect(0, 0, CHARACTER_SIZE, CHARACTER_SIZE)
-        self.rect.x = 200
+        self.rect.x = 0
         self.rect.y = 400
         self.controls = {TOP: pygame.K_z, DOWN: pygame.K_s, LEFT: pygame.K_q, RIGHT: pygame.K_d,
                          "attack": pygame.K_SPACE}

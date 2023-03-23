@@ -5,6 +5,7 @@ from global_variables import *
 
 
 pygame.init()
+pygame.font.init()  # TODO : Necessary ?
 
 # Generate the window of our game
 pygame.display.set_caption("TwoMenArmy")

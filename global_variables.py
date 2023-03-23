@@ -1,4 +1,5 @@
 import os
+import pygame
 
 
 CURRENT_DIRECTORY = os.getcwd()
@@ -15,3 +16,4 @@ DOWN = "bottom"
 LEFT_BOTTOM = "leftbottom"
 SIZE_HEALTH_BAR = 150
 CHARACTER_SIZE = 150
+# TEXT_FONT = pygame.font.SysFont("Arial", 36)

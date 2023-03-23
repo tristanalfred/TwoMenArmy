@@ -5,6 +5,7 @@ from Enemies import PunchingBall
 from Obstacles import Door, Rock, Levier
 from Players import Father, Son
 from global_variables import *
+from tools import *
 
 
 class Game:
@@ -18,33 +19,16 @@ class Game:
         self.all_enemies = pygame.sprite.Group()
         self.all_obstacles = pygame.sprite.Group()
         self.pressed = {}
+        self.textfont = pygame.font.SysFont("Arial", 36)  # TODO : add as global variable ?
 
-        self.spawn_monster(PunchingBall, SCREEN_WIDTH/2, 100)
-        self.add_obstacle(Rock, 400, 0)
-        self.add_obstacle(Rock, 400, 70)
-        self.add_obstacle(Rock, 400, 140)
-        self.add_obstacle(Rock, 400, 210)
-        self.add_obstacle(Rock, 400, 280)
-        self.add_obstacle(Door, 400, 350)
-        # self.add_obstacle(Levier, 200, 450)
-
-    def spawn_monster(self, enemy_type, x, y):
-        enemy = enemy_type(self, x, y)
-        self.all_enemies.add(enemy)
-
-    def add_obstacle(self, obstacle_type, x, y):
-        obstacle = obstacle_type(self, x, y)
-        self.all_obstacles.add(obstacle)
-
-    def check_collisions(self, sprite, groups):
-        if not isinstance(groups, list):
-            groups = [groups]
-        for group in groups:
-            for obj in group:
-                # if pygame.sprite.collide_mask(sprite, obj):  # For pixel perfect collision
-                if sprite.rect.colliderect(obj):  # For image size collision
-                    return obj
-        return False
+        spawn_monster(self, PunchingBall, SCREEN_WIDTH/2, 100)
+        add_obstacle(self, Rock, 400, 0)
+        add_obstacle(self, Rock, 400, 70)
+        add_obstacle(self, Rock, 400, 140)
+        add_obstacle(self, Rock, 400, 210)
+        add_obstacle(self, Rock, 400, 280)
+        add_obstacle(self, Door, 400, 350)
+        add_obstacle(self, Levier,  200, 450)
 
     def handling_events(self):
         """
@@ -102,6 +86,9 @@ class Game:
         self.son.all_projectiles.draw(self.screen)
 
         self.all_obstacles.draw(self.screen)
+        for obstacle in self.all_obstacles:  # TODO : add correct condition
+            if type(obstacle).__name__ == "Levier":
+                obstacle.is_accessible()
 
         self.all_enemies.draw(self.screen)
         for enemy in self.all_enemies:
@@ -109,8 +96,6 @@ class Game:
 
         # Apply players images
         self.screen.blit(self.father.image, self.father.rect)
-        # pygame.draw.rect(self.screen, "yellow", pygame.Rect(self.father.rect.left, self.father.rect.top,
-        #                  self.father.rect.width, self.father.rect.height))  # Draw visual rect for characters
         self.screen.blit(self.son.image, self.son.rect)
 
         self.father.update_health_bar(self.screen)
