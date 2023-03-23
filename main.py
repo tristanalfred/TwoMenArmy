@@ -13,8 +13,9 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 background = pygame.image.load(
             os.path.join(CURRENT_DIRECTORY, "assets", "background.png"))  # os.path.join allow windows and linux paths
 
+text_font = pygame.font.SysFont("Arial", 36)
 
 # Load the game
-game = Game(screen, background)
+game = Game(screen, background, text_font)
 game.run()
 pygame.quit()

@@ -1,6 +1,7 @@
 import pygame
 
 from global_variables import *
+from tools import *
 
 
 class Obstacle(pygame.sprite.Sprite):
@@ -22,22 +23,45 @@ class Rock(Obstacle):
 
 
 class Door(Obstacle):
-    def __init__(self, game, x, y):
+    def __init__(self, game, x, y, color="yellow"):
         super().__init__()
+        self.game = game
+        self.closed = True
         self.image = pygame.Surface((50, 200))
-        self.image.fill('yellow')
+        self.color = color
+        self.image.fill(self.color)
         self.rect = self.image.get_rect(topleft=(x, y))
 
-    def opening(self):
-        self.blocking = False
-        self.image.fill('red')
+    def open(self):
+        self.closed = False
+        self.image.set_alpha(100)  # Add transparency
 
 
-class Levier(Obstacle):
-    def __init__(self, game, x, y):
-        super().__init__()
+class Interaction:
+    def __init__(self):
+        self.min_distance = None
+        self.accessible_by_father = False
+        self.accessible_by_son = False
+
+
+class Levier(Obstacle, Interaction):
+    def __init__(self, game, x, y, color="yellow"):
+        Obstacle.__init__(self)
+        Interaction.__init__(self)
+        self.game = game
         self.image = pygame.Surface((50, 50))
-        self.image.fill('yellow')
+        self.color = color
+        self.image.fill(self.color)
         self.rect = self.image.get_rect(topleft=(x, y))
+        self.rect_activation = game.screen, (0, 0, 0), (self.rect.x - 50, self.rect.y - 50, 100, 100)
+        self.door = find_object_group(self.game.all_obstacles, Door, "color", self.color)
+        self.min_distance = 200
+        self.already_activated = False
 
+    def show_accessible(self):
+        draw_borders_rect(self.game, self)
+        # display_text_object(self.game, self, "E")
 
+    def activate(self):
+        self.door.open()
+        self.already_activated = True

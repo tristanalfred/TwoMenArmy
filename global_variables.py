@@ -1,4 +1,5 @@
 import os
+import pygame
 
 
 CURRENT_DIRECTORY = os.getcwd()

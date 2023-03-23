@@ -5,10 +5,11 @@ from Enemies import PunchingBall
 from Obstacles import Door, Rock, Levier
 from Players import Father, Son
 from global_variables import *
+from tools import *
 
 
 class Game:
-    def __init__(self, screen, background):
+    def __init__(self, screen, background, text_font):
         self.screen = screen
         self.running = True
         self.clock = pygame.time.Clock()  # FPS management
@@ -17,38 +18,25 @@ class Game:
         self.son = Son(self)
         self.all_enemies = pygame.sprite.Group()
         self.all_obstacles = pygame.sprite.Group()
+        self.all_interactions = pygame.sprite.Group()
         self.pressed = {}
+        self.text_font = text_font
 
-        self.spawn_monster(PunchingBall, SCREEN_WIDTH/2, 100)
-        self.add_obstacle(Rock, 400, 0)
-        self.add_obstacle(Rock, 400, 70)
-        self.add_obstacle(Rock, 400, 140)
-        self.add_obstacle(Rock, 400, 210)
-        self.add_obstacle(Rock, 400, 280)
-        self.add_obstacle(Door, 400, 350)
-        # self.add_obstacle(Levier, 200, 450)
-
-    def spawn_monster(self, enemy_type, x, y):
-        enemy = enemy_type(self, x, y)
-        self.all_enemies.add(enemy)
-
-    def add_obstacle(self, obstacle_type, x, y):
-        obstacle = obstacle_type(self, x, y)
-        self.all_obstacles.add(obstacle)
-
-    def check_collisions(self, sprite, groups):
-        if not isinstance(groups, list):
-            groups = [groups]
-        for group in groups:
-            for obj in group:
-                # if pygame.sprite.collide_mask(sprite, obj):  # For pixel perfect collision
-                if sprite.rect.colliderect(obj):  # For image size collision
-                    return obj
-        return False
+        create_entity(self, PunchingBall, SCREEN_WIDTH/2, 100, [self.all_enemies])
+        create_entity(self, Rock, 400, 0, [self.all_obstacles])
+        create_entity(self, Rock, 400, 70, [self.all_obstacles])
+        create_entity(self, Rock, 400, 140, [self.all_obstacles])
+        create_entity(self, Rock, 400, 210, [self.all_obstacles])
+        create_entity(self, Rock, 400, 280, [self.all_obstacles])
+        create_entity(self, Door, 400, 350, [self.all_obstacles])
+        create_entity(self, Rock, 400, 550, [self.all_obstacles])
+        create_entity(self, Rock, 400, 620, [self.all_obstacles])
+        create_entity(self, Rock, 400, 690, [self.all_obstacles])
+        create_entity(self, Levier,  200, 450, [self.all_obstacles, self.all_interactions])
 
     def handling_events(self):
         """
-        Get all the events (ex : key pressed)
+        Get all the events, like key pressed
         """
         for event in pygame.event.get():
             # Close the game
@@ -64,8 +52,16 @@ class Game:
                 # Non continuous actions (ex : projectile launch)
                 if event.key == pygame.K_SPACE:
                     self.father.launch_projectile()
-                elif event.key == pygame.K_KP0:
+                if event.key == pygame.K_KP0:
                     self.son.launch_projectile()
+                if event.key == pygame.K_e:
+                    for interaction in self.all_interactions:
+                        if interaction.accessible_by_father:
+                            interaction.activate()
+                if event.key == pygame.K_KP1:
+                    for interaction in self.all_interactions:
+                        if interaction.accessible_by_son:
+                            interaction.activate()
 
             # End of continuous actions
             elif event.type == pygame.KEYUP:
@@ -109,12 +105,13 @@ class Game:
 
         # Apply players images
         self.screen.blit(self.father.image, self.father.rect)
-        # pygame.draw.rect(self.screen, "yellow", pygame.Rect(self.father.rect.left, self.father.rect.top,
-        #                  self.father.rect.width, self.father.rect.height))  # Draw visual rect for characters
         self.screen.blit(self.son.image, self.son.rect)
 
         self.father.update_health_bar(self.screen)
         self.son.update_health_bar(self.screen)
+
+        find_closest_interaction(self.all_interactions, self.father)
+        find_closest_interaction(self.all_interactions, self.son)
 
         pygame.display.flip()
 
