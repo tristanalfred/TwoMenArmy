@@ -37,9 +37,17 @@ class Door(Obstacle):
         self.image.set_alpha(100)  # Add transparency
 
 
-class Levier(Obstacle):
+class Interaction:
+    def __init__(self):
+        self.min_distance = None
+        self.accessible_by_father = False
+        self.accessible_by_son = False
+
+
+class Levier(Obstacle, Interaction):
     def __init__(self, game, x, y, color="yellow"):
-        super().__init__()
+        Obstacle.__init__(self)
+        Interaction.__init__(self)
         self.game = game
         self.image = pygame.Surface((50, 50))
         self.color = color
@@ -47,12 +55,13 @@ class Levier(Obstacle):
         self.rect = self.image.get_rect(topleft=(x, y))
         self.rect_activation = game.screen, (0, 0, 0), (self.rect.x - 50, self.rect.y - 50, 100, 100)
         self.door = find_object_group(self.game.all_obstacles, Door, "color", self.color)
+        self.min_distance = 200
+        self.already_activated = False
 
-        self.is_accessible()  # TODO : call with correct condition. In Game
-
-    def is_accessible(self):
+    def show_accessible(self):
         draw_borders_rect(self.game, self)
-        display_text_object(self.game, self, "E")
+        # display_text_object(self.game, self, "E")
 
     def activate(self):
         self.door.open()
+        self.already_activated = True
