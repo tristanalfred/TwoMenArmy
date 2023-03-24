@@ -1,10 +1,10 @@
-import pygame
 import sys
 
 from Enemies import PunchingBall
 from Obstacles import Door, Rock, Levier
 from Players import Father, Son
 from global_variables import *
+from levels import level1, level2
 from tools import *
 
 
@@ -14,25 +14,43 @@ class Game:
         self.running = True
         self.clock = pygame.time.Clock()  # FPS management
         self.background = background
-        self.father = Father(self)
-        self.son = Son(self)
+        self.father = None
+        self.son = None
         self.all_enemies = pygame.sprite.Group()
         self.all_obstacles = pygame.sprite.Group()
         self.all_interactions = pygame.sprite.Group()
         self.pressed = {}
         self.text_font = text_font
+        self.actual_level = 1
 
-        create_entity(self, PunchingBall, SCREEN_WIDTH/2, 100, [self.all_enemies])
-        create_entity(self, Rock, 400, 0, [self.all_obstacles])
-        create_entity(self, Rock, 400, 70, [self.all_obstacles])
-        create_entity(self, Rock, 400, 140, [self.all_obstacles])
-        create_entity(self, Rock, 400, 210, [self.all_obstacles])
-        create_entity(self, Rock, 400, 280, [self.all_obstacles])
-        create_entity(self, Door, 400, 350, [self.all_obstacles])
-        create_entity(self, Rock, 400, 550, [self.all_obstacles])
-        create_entity(self, Rock, 400, 620, [self.all_obstacles])
-        create_entity(self, Rock, 400, 690, [self.all_obstacles])
-        create_entity(self, Levier,  200, 450, [self.all_obstacles, self.all_interactions])
+        self.load_level(self.actual_level)
+
+    def load_level(self, level):
+        level_map = None
+        if level == 1:
+            level_map = level1.map
+        elif level == 2:
+            level_map = level2.map
+
+        self.add_level_entities(level_map)
+
+    def add_level_entities(self, level_map):
+        for x in range(17):
+            for y in range(26):
+                if level_map[x][y] == "F":
+                    self.father = Father(self, y*40, x*40)
+                elif level_map[x][y] == "S":
+                    self.son = Son(self, y*40, x*40)
+                elif level_map[x][y] == "R":
+                    create_entity(self, Rock, y*40, x*40, [self.all_obstacles])
+                elif level_map[x][y] == "D":
+                    create_entity(self, Door, y*40, x*40, [self.all_obstacles])
+                elif level_map[x][y] == "L":
+                    create_entity(self, Levier, y*40, x*40, [self.all_obstacles, self.all_interactions])
+                elif level_map[x][y] == "E-PB":
+                    create_entity(self, PunchingBall, y*40, x*40, [self.all_enemies])
+
+        connect_interactions(self.all_interactions, self.all_obstacles)
 
     def handling_events(self):
         """
@@ -86,6 +104,12 @@ class Game:
         for enemy in self.all_enemies:
             if enemy.health <= 0:
                 self.all_enemies.remove(enemy)
+
+        # Reach next level if all the enemies are dead
+        if len(self.all_enemies) == 0:
+            clean_level(self)
+            self.actual_level += 1
+            self.load_level(self.actual_level)
 
     def display(self):
         """

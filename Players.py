@@ -1,4 +1,3 @@
-import pygame
 from animation import AnimateSprite
 
 from Projectile import Projectile
@@ -30,7 +29,7 @@ class Alive(AnimateSprite):
 
 
 class Player(Alive):
-    def __init__(self, game, entity_name):
+    def __init__(self, game, entity_name, x, y):
         super().__init__(game, "character", entity_name)
         self.game = game
         self.weight = 10
@@ -38,7 +37,7 @@ class Player(Alive):
         self.max_health = 100
         self.attack = 10
         self.velocity = 5
-        self.rect = None
+        self.rect = pygame.Rect(x, y, CHARACTER_SIZE, CHARACTER_SIZE)
         self.all_projectiles = pygame.sprite.Group()
         self.direction = RIGHT
         self.controls = {TOP: None, DOWN: None, LEFT: None, RIGHT: None, "attack": None}
@@ -94,21 +93,15 @@ class Player(Alive):
 
 
 class Father(Player):
-    def __init__(self, game):
-        super().__init__(game, "father")
-        # self.rect = self.image.get_rect()
-        self.rect = pygame.Rect(0, 0, CHARACTER_SIZE, CHARACTER_SIZE)
-        self.rect.x = 0
-        self.rect.y = 400
+    def __init__(self, game, x, y):
+        super().__init__(game, "father", x, y)
         self.controls = {TOP: pygame.K_z, DOWN: pygame.K_s, LEFT: pygame.K_q, RIGHT: pygame.K_d,
                          "attack": pygame.K_SPACE}
 
 
 class Son(Player):
-    def __init__(self, game):
-        super().__init__(game, "son")
-        # self.rect = self.image.get_rect()
-        self.rect = pygame.Rect(0, 0, CHARACTER_SIZE, CHARACTER_SIZE)
+    def __init__(self, game, x, y):
+        super().__init__(game, "son", x, y)
         self.weight = 8
         self.controls = {TOP: pygame.K_UP, DOWN: pygame.K_DOWN, LEFT: pygame.K_LEFT, RIGHT: pygame.K_RIGHT,
                          "attack": pygame.K_KP0}

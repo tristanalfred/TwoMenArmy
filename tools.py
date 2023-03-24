@@ -5,6 +5,12 @@ from math import sqrt
 # TODO : replace game where not needed
 
 
+def connect_interactions(all_interactions, all_obstacles):
+    for interaction in all_interactions:
+        if type(interaction).__name__ == "Levier":
+            interaction.door = find_object_group(all_obstacles, "Door", "color", interaction.color)
+
+
 def find_closest_interaction(all_interactions, player):
     closest_interaction_accessible = None
     distance_interaction = {}
@@ -33,8 +39,11 @@ def find_closest_interaction(all_interactions, player):
 
 
 def find_object_group(group, entity_type, attribute=None, attribute_value=None):
+    if not isinstance(entity_type, str):
+        entity_type = type(entity_type).__name__
+
     for obj in group:
-        if isinstance(obj, entity_type) and (not attribute or getattr(obj, attribute) == attribute_value):
+        if type(obj).__name__ == entity_type and (not attribute or getattr(obj, attribute) == attribute_value):
             return obj
 
 
@@ -67,3 +76,9 @@ def check_collisions(sprite, groups):
                     and not (type(obj).__name__ == "Door" and obj.closed is False):  # For image size collision
                 return obj
     return False
+
+
+def clean_level(game):
+    game.all_obstacles.empty()
+    game.all_interactions.empty()
+    game.all_enemies.empty()

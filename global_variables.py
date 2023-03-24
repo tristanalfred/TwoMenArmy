@@ -1,5 +1,4 @@
 import os
-import pygame
 
 
 CURRENT_DIRECTORY = os.getcwd()
@@ -14,5 +13,5 @@ RIGHT = "right"
 RIGHTBOTTOM = "rightbottom"
 DOWN = "bottom"
 LEFT_BOTTOM = "leftbottom"
-SIZE_HEALTH_BAR = 150
-CHARACTER_SIZE = 150
+SIZE_HEALTH_BAR = 70
+CHARACTER_SIZE = 70

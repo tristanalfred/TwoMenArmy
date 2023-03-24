@@ -1,5 +1,3 @@
-import pygame
-
 from global_variables import *
 from tools import *
 
@@ -16,7 +14,8 @@ class Rock(Obstacle):
     def __init__(self, game, x, y):
         super().__init__()
         self.game = game
-        self.image = pygame.image.load(os.path.join(CURRENT_DIRECTORY, "assets", "rock.png"))
+        self.image = pygame.transform.scale(pygame.image.load(os.path.join(CURRENT_DIRECTORY, "assets", "rock.png")),
+                                            (40, 40))
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -27,7 +26,7 @@ class Door(Obstacle):
         super().__init__()
         self.game = game
         self.closed = True
-        self.image = pygame.Surface((50, 200))
+        self.image = pygame.Surface((50, 120))
         self.color = color
         self.image.fill(self.color)
         self.rect = self.image.get_rect(topleft=(x, y))
@@ -54,7 +53,7 @@ class Levier(Obstacle, Interaction):
         self.image.fill(self.color)
         self.rect = self.image.get_rect(topleft=(x, y))
         self.rect_activation = game.screen, (0, 0, 0), (self.rect.x - 50, self.rect.y - 50, 100, 100)
-        self.door = find_object_group(self.game.all_obstacles, Door, "color", self.color)
+        self.door = None
         self.min_distance = 200
         self.already_activated = False
 

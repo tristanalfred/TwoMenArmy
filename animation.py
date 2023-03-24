@@ -43,7 +43,7 @@ def load_animation_images(entity_type, sprite_name, action, direction):
 
     for num in range(len(os.listdir(path))):
         images.append(pygame.transform.scale(pygame.image.load(
-            os.path.join(path, f"{sprite_name}_{action}_{direction}_{num}.png")), (150, 150)))
+            os.path.join(path, f"{sprite_name}_{action}_{direction}_{num}.png")), (CHARACTER_SIZE, CHARACTER_SIZE)))
 
     return images
 

@@ -1,5 +1,3 @@
-import pygame
-
 from global_variables import *
 from tools import *
 
