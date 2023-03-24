@@ -1,17 +1,19 @@
+import datetime
+import importlib
 import sys
 
 from Enemies import PunchingBall
 from Obstacles import Door, Rock, Levier
 from Players import Father, Son
 from global_variables import *
-from levels import level1, level2
 from tools import *
 
 
 class Game:
-    def __init__(self, screen, background, text_font):
+    def __init__(self, screen, background, text_font_screen, text_font_object):
         self.screen = screen
         self.running = True
+        self.pause = False
         self.clock = pygame.time.Clock()  # FPS management
         self.background = background
         self.father = None
@@ -20,21 +22,22 @@ class Game:
         self.all_obstacles = pygame.sprite.Group()
         self.all_interactions = pygame.sprite.Group()
         self.pressed = {}
-        self.text_font = text_font
+        self.text_font_screen = text_font_screen
+        self.text_font_object = text_font_object
         self.actual_level = 1
+        self.total_levels = 2
+        self.level = None
+        self.start_time = datetime.datetime.now()
+        self.game_ended = False
 
         self.load_level(self.actual_level)
 
-    def load_level(self, level):
-        level_map = None
-        if level == 1:
-            level_map = level1.map
-        elif level == 2:
-            level_map = level2.map
+    def load_level(self, level_nb):
+        self.level = importlib.import_module(f"levels.level{level_nb}")
+        self.add_level_entities()
 
-        self.add_level_entities(level_map)
-
-    def add_level_entities(self, level_map):
+    def add_level_entities(self):
+        level_map = self.level.map
         for x in range(17):
             for y in range(26):
                 if level_map[x][y] == "F":
@@ -63,7 +66,10 @@ class Game:
                 pygame.quit()
                 sys.exit()
 
-            elif event.type == pygame.KEYDOWN:
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_KP2:
+                self.pause = not self.pause
+
+            elif event.type == pygame.KEYDOWN and not self.pause:
                 # Start of continuous actions (ex : move)
                 self.pressed[event.key] = True
 
@@ -107,9 +113,13 @@ class Game:
 
         # Reach next level if all the enemies are dead
         if len(self.all_enemies) == 0:
-            clean_level(self)
-            self.actual_level += 1
-            self.load_level(self.actual_level)
+            if self.actual_level < self.total_levels:
+                clean_level(self)
+                self.actual_level += 1
+                self.load_level(self.actual_level)
+                self.start_time = datetime.datetime.now()
+            else:
+                self.game_ended = True
 
     def display(self):
         """
@@ -136,6 +146,16 @@ class Game:
 
         find_closest_interaction(self.all_interactions, self.father)
         find_closest_interaction(self.all_interactions, self.son)
+
+        if (datetime.datetime.now() - self.start_time).seconds < 2 and not self.pause:
+            display_text_screen(self, self.level.name)
+            pass
+
+        if self.pause:
+            display_text_screen(self, "Pause")
+
+        if self.game_ended:
+            display_text_screen(self, "You win !")
 
         pygame.display.flip()
 

@@ -48,8 +48,14 @@ def find_object_group(group, entity_type, attribute=None, attribute_value=None):
 
 
 def display_text_object(game, obj, text):
-    render = game.text_font.render(text, True, (255, 0, 0))
+    render = game.text_font_object.render(text, True, (255, 0, 0))
     game.screen.blit(render, (obj.rect.x + obj.rect.width/2 - render.get_width()/2, obj.rect.y + obj.rect.height))
+
+
+def display_text_screen(game, text):
+    render = game.text_font_screen.render(text, True, (50, 50, 50))
+    game.screen.blit(render, (game.screen.get_size()[0]/2 - render.get_width()/2,
+                              game.screen.get_size()[1]/2 - render.get_height()/2))
 
 
 def draw_borders_rect(game, obj):
