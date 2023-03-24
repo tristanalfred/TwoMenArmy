@@ -3,7 +3,7 @@ import importlib
 import sys
 
 from Enemies import PunchingBall
-from Obstacles import Door, Rock, Levier
+from Obstacles import *
 from Players import Father, Son
 from global_variables import *
 from tools import *
@@ -39,7 +39,7 @@ class Game:
     def add_level_entities(self):
         level_map = self.level.map
         for x in range(17):
-            for y in range(26):
+            for y in range(25):
                 if level_map[x][y] == "F":
                     self.father = Father(self, y*40, x*40)
                 elif level_map[x][y] == "S":
@@ -52,6 +52,8 @@ class Game:
                     create_entity(self, Levier, y*40, x*40, [self.all_obstacles, self.all_interactions])
                 elif level_map[x][y] == "E-PB":
                     create_entity(self, PunchingBall, y*40, x*40, [self.all_enemies])
+                elif level_map[x][y] == "X":
+                    create_entity(self, ExitLevel, y * 40, x * 40, [self.all_obstacles])
 
         connect_interactions(self.all_interactions, self.all_obstacles)
 
@@ -111,15 +113,20 @@ class Game:
             if enemy.health <= 0:
                 self.all_enemies.remove(enemy)
 
-        # Reach next level if all the enemies are dead
+        exit_level = find_object_group(self.all_obstacles, ExitLevel)
         if len(self.all_enemies) == 0:
-            if self.actual_level < self.total_levels:
-                clean_level(self)
-                self.actual_level += 1
-                self.load_level(self.actual_level)
-                self.start_time = datetime.datetime.now()
-            else:
-                self.game_ended = True
+            if exit_level:
+                exit_level.opening()
+
+        # Reach next level
+        if exit_level and not exit_level.closed and self.father.rect.colliderect(exit_level) \
+                and self.son.rect.colliderect(exit_level):
+            clean_level(self)
+            self.actual_level += 1
+            self.load_level(self.actual_level)
+            self.start_time = datetime.datetime.now()
+        elif not exit_level and len(self.all_enemies) == 0:
+            self.game_ended = True
 
     def display(self):
         """

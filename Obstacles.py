@@ -64,3 +64,19 @@ class Levier(Obstacle, Interaction):
     def activate(self):
         self.door.open()
         self.already_activated = True
+
+
+class ExitLevel(Obstacle):
+    def __init__(self, game, x, y):
+        super().__init__()
+        self.game = game
+        self.blocking = False
+        self.closed = True
+        self.image = pygame.Surface((120, 120))
+        self.color = (145, 29, 143)
+        self.image.fill(self.color)
+        self.rect = self.image.get_rect(topleft=(x, y))
+
+    def opening(self):
+        self.closed = False
+        self.image.set_alpha(100)  # Add transparency

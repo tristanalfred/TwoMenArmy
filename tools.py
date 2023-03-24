@@ -40,7 +40,7 @@ def find_closest_interaction(all_interactions, player):
 
 def find_object_group(group, entity_type, attribute=None, attribute_value=None):
     if not isinstance(entity_type, str):
-        entity_type = type(entity_type).__name__
+        entity_type = entity_type.__name__
 
     for obj in group:
         if type(obj).__name__ == entity_type and (not attribute or getattr(obj, attribute) == attribute_value):
@@ -77,9 +77,9 @@ def check_collisions(sprite, groups):
         groups = [groups]
     for group in groups:
         for obj in group:
-            # if pygame.sprite.collide_mask(sprite, obj):  # For pixel perfect collision
             if sprite.rect.colliderect(obj) \
-                    and not (type(obj).__name__ == "Door" and obj.closed is False):  # For image size collision
+                    and not ((type(obj).__name__ == "Door" or (type(obj).__name__ == "ExitLevel"))
+                             and obj.closed is False):
                 return obj
     return False
 
