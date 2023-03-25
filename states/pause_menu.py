@@ -23,10 +23,10 @@ class PauseMenu(State):
 
     def update(self, pressed):
         self.update_cursor(pressed)
-        if "action1" in pressed:
+        if pg.K_m in pressed and pressed[pg.K_m]:
             self.transition_state()
-        # if pressed["action2"]:
-        #     self.exit_state()
+        if pg.K_p in pressed and pressed[pg.K_p]:
+            self.exit_state()
         self.game_mgmt.reset_keys()
 
     def display(self, screen):
