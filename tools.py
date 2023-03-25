@@ -1,4 +1,4 @@
-import pygame
+import pygame as pg
 from math import sqrt
 
 
@@ -47,20 +47,20 @@ def find_object_group(group, entity_type, attribute=None, attribute_value=None):
             return obj
 
 
-def display_text_object(game, obj, text):
-    render = game.text_font_object.render(text, True, (255, 0, 0))
-    game.screen.blit(render, (obj.rect.x + obj.rect.width/2 - render.get_width()/2, obj.rect.y + obj.rect.height))
+def display_text_object(game_mgmt, obj, text):
+    render = game_mgmt.text_font_object.render(text, True, (255, 0, 0))
+    game_mgmt.screen.blit(render, (obj.rect.x + obj.rect.width/2 - render.get_width()/2, obj.rect.y + obj.rect.height))
 
 
-def display_text_screen(game, text):
-    render = game.text_font_screen.render(text, True, (50, 50, 50))
-    game.screen.blit(render, (game.screen.get_size()[0]/2 - render.get_width()/2,
-                              game.screen.get_size()[1]/2 - render.get_height()/2))
+def display_text_screen(game_mgmt, text):
+    render = game_mgmt.text_font_screen.render(text, True, (50, 50, 50))
+    game_mgmt.screen.blit(render, (game_mgmt.screen.get_size()[0]/2 - render.get_width()/2,
+                                   game_mgmt.screen.get_size()[1]/2 - render.get_height()/2))
 
 
-def draw_borders_rect(game, obj):
+def draw_borders_rect(game_mgmt, obj):
     for i in range(4):
-        pygame.draw.rect(game.screen, (0, 0, 0),
+        pg.draw.rect(game_mgmt.screen, (0, 0, 0),
                          (obj.rect.x - i, obj.rect.y - i, obj.rect.width, obj.rect.height), 1)
 
 

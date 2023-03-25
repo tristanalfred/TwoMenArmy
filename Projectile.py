@@ -2,13 +2,13 @@ from global_variables import *
 from tools import *
 
 
-class Projectile(pygame.sprite.Sprite):
+class Projectile(pg.sprite.Sprite):
     def __init__(self, player, game):
         super().__init__()
         self.game = game
         self.velocity = 10
         self.damage = 10
-        self.image = pygame.image.load(os.path.join(CURRENT_DIRECTORY, "assets", "projectile.png"))
+        self.image = pg.image.load(os.path.join(CURRENT_DIRECTORY, "assets", "projectile.png"))
         self.rect = self.image.get_rect()
         self.rect.x = player.rect.center[0] - self.rect.center[0]
         self.rect.y = player.rect.center[1] - self.rect.center[1]
