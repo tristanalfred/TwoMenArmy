@@ -1,4 +1,5 @@
-import pygame
+import datetime
+
 from animation import AnimateSprite
 
 from Projectile import Projectile
@@ -22,15 +23,15 @@ class Alive(AnimateSprite):
         max_bar_position = [self.rect.center[0] - SIZE_HEALTH_BAR/2, self.rect.y + (self.rect.bottom - self.rect.top), SIZE_HEALTH_BAR, 5]
 
         # Draw bar
-        pygame.draw.rect(surface, max_bar_color, max_bar_position)
-        pygame.draw.rect(surface, bar_color, bar_position)
+        pg.draw.rect(surface, max_bar_color, max_bar_position)
+        pg.draw.rect(surface, bar_color, bar_position)
 
     def damage_incured(self, amount):
         self.health -= amount
 
 
 class Player(Alive):
-    def __init__(self, game, entity_name):
+    def __init__(self, game, entity_name, x, y):
         super().__init__(game, "character", entity_name)
         self.game = game
         self.weight = 10
@@ -38,24 +39,35 @@ class Player(Alive):
         self.max_health = 100
         self.attack = 10
         self.velocity = 5
-        self.rect = None
-        self.all_projectiles = pygame.sprite.Group()
+        self.rect = pg.Rect(x, y, CHARACTER_SIZE, CHARACTER_SIZE)
+        self.all_projectiles = pg.sprite.Group()
         self.direction = RIGHT
         self.controls = {TOP: None, DOWN: None, LEFT: None, RIGHT: None, "attack": None}
+        self.controls_delay = {"attack": {"min_ms_delay": 200000, "last_use": datetime.datetime.now()}}
 
-    def move(self):
+    def update_actions(self, pressed):
+        self.move(pressed)
+        self.launch_projectile(pressed)
+        self.activate(pressed)
+
+    def activate(self, pressed):
+        pass
+
+    def move(self, pressed):
         updated_direction = ""
 
-        if self.game.pressed.get(self.controls[LEFT]) and self.rect.x > 0:
+        if pressed.get(self.controls[LEFT]) and self.rect.x > 0:
             updated_direction += LEFT
             self.move_left()
-        elif self.game.pressed.get(self.controls[RIGHT]) and self.rect.x < self.game.screen.get_width() - self.rect.width:
+        elif pressed.get(self.controls[RIGHT]) \
+                and self.rect.x < self.game.game_mgmt.screen.get_width() - self.rect.width:
             updated_direction += RIGHT
             self.move_right()
-        if self.game.pressed.get(self.controls[TOP]) and self.rect.y > 0:
+        if pressed.get(self.controls[TOP]) and self.rect.y > 0:
             updated_direction += TOP
             self.move_up()
-        elif self.game.pressed.get(self.controls[DOWN]) and self.rect.y < self.game.screen.get_height() - self.rect.height:
+        elif pressed.get(self.controls[DOWN]) \
+                and self.rect.y < self.game.game_mgmt.screen.get_height() - self.rect.height:
             updated_direction += DOWN
             self.move_down()
 
@@ -89,26 +101,36 @@ class Player(Alive):
         if obj_collided:
             self.rect.bottom = obj_collided.rect.top
 
-    def launch_projectile(self):
-        self.all_projectiles.add(Projectile(self, self.game))
+    def launch_projectile(self, pressed):
+        if pressed.get(self.controls["attack"]) \
+            and (datetime.datetime.now() - self.controls_delay["attack"]["last_use"]).microseconds \
+                > self.controls_delay["attack"]["min_ms_delay"]:
+            self.all_projectiles.add(Projectile(self, self.game))
+            self.controls_delay["attack"]["last_use"] = datetime.datetime.now()
 
 
 class Father(Player):
-    def __init__(self, game):
-        super().__init__(game, "father")
-        # self.rect = self.image.get_rect()
-        self.rect = pygame.Rect(0, 0, CHARACTER_SIZE, CHARACTER_SIZE)
-        self.rect.x = 0
-        self.rect.y = 400
-        self.controls = {TOP: pygame.K_z, DOWN: pygame.K_s, LEFT: pygame.K_q, RIGHT: pygame.K_d,
-                         "attack": pygame.K_SPACE}
+    def __init__(self, game, x, y):
+        super().__init__(game, "father", x, y)
+        self.controls = {TOP: pg.K_z, DOWN: pg.K_s, LEFT: pg.K_q, RIGHT: pg.K_d,
+                         "attack": pg.K_SPACE, "interaction": pg.K_e}
+
+    def activate(self, pressed):
+        if pressed.get(self.controls["interaction"]):
+            for interaction in self.game.all_interactions:
+                if interaction.accessible_by_father:
+                    interaction.activate()
 
 
 class Son(Player):
-    def __init__(self, game):
-        super().__init__(game, "son")
-        # self.rect = self.image.get_rect()
-        self.rect = pygame.Rect(0, 0, CHARACTER_SIZE, CHARACTER_SIZE)
+    def __init__(self, game, x, y):
+        super().__init__(game, "son", x, y)
         self.weight = 8
-        self.controls = {TOP: pygame.K_UP, DOWN: pygame.K_DOWN, LEFT: pygame.K_LEFT, RIGHT: pygame.K_RIGHT,
-                         "attack": pygame.K_KP0}
+        self.controls = {TOP: pg.K_UP, DOWN: pg.K_DOWN, LEFT: pg.K_LEFT, RIGHT: pg.K_RIGHT,
+                         "attack": pg.K_KP0, "interaction": pg.K_KP1}
+
+    def activate(self, pressed):
+        if pressed.get(self.controls["interaction"]):
+            for interaction in self.game.all_interactions:
+                if interaction.accessible_by_son:
+                    interaction.activate()

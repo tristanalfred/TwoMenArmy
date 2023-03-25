@@ -1,8 +1,14 @@
-import pygame
+import pygame as pg
 from math import sqrt
 
 
 # TODO : replace game where not needed
+
+
+def connect_interactions(all_interactions, all_obstacles):
+    for interaction in all_interactions:
+        if type(interaction).__name__ == "Levier":
+            interaction.door = find_object_group(all_obstacles, "Door", "color", interaction.color)
 
 
 def find_closest_interaction(all_interactions, player):
@@ -33,19 +39,28 @@ def find_closest_interaction(all_interactions, player):
 
 
 def find_object_group(group, entity_type, attribute=None, attribute_value=None):
+    if not isinstance(entity_type, str):
+        entity_type = entity_type.__name__
+
     for obj in group:
-        if isinstance(obj, entity_type) and (not attribute or getattr(obj, attribute) == attribute_value):
+        if type(obj).__name__ == entity_type and (not attribute or getattr(obj, attribute) == attribute_value):
             return obj
 
 
-def display_text_object(game, obj, text):
-    render = game.text_font.render(text, True, (255, 0, 0))
-    game.screen.blit(render, (obj.rect.x + obj.rect.width/2 - render.get_width()/2, obj.rect.y + obj.rect.height))
+def display_text_object(game_mgmt, obj, text):
+    render = game_mgmt.text_font_object.render(text, True, (255, 0, 0))
+    game_mgmt.screen.blit(render, (obj.rect.x + obj.rect.width/2 - render.get_width()/2, obj.rect.y + obj.rect.height))
 
 
-def draw_borders_rect(game, obj):
+def display_text_screen(game_mgmt, text):
+    render = game_mgmt.text_font_screen.render(text, True, (50, 50, 50))
+    game_mgmt.screen.blit(render, (game_mgmt.screen.get_size()[0]/2 - render.get_width()/2,
+                                   game_mgmt.screen.get_size()[1]/2 - render.get_height()/2))
+
+
+def draw_borders_rect(game_mgmt, obj):
     for i in range(4):
-        pygame.draw.rect(game.screen, (0, 0, 0),
+        pg.draw.rect(game_mgmt.screen, (0, 0, 0),
                          (obj.rect.x - i, obj.rect.y - i, obj.rect.width, obj.rect.height), 1)
 
 
@@ -62,8 +77,14 @@ def check_collisions(sprite, groups):
         groups = [groups]
     for group in groups:
         for obj in group:
-            # if pygame.sprite.collide_mask(sprite, obj):  # For pixel perfect collision
             if sprite.rect.colliderect(obj) \
-                    and not (type(obj).__name__ == "Door" and obj.closed is False):  # For image size collision
+                    and not ((type(obj).__name__ == "Door" or (type(obj).__name__ == "ExitLevel"))
+                             and obj.closed is False):
                 return obj
     return False
+
+
+def clean_level(game):
+    game.all_obstacles.empty()
+    game.all_interactions.empty()
+    game.all_enemies.empty()
