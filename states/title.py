@@ -7,7 +7,6 @@ class Title(State):
     def __init__(self, game_mgmt):
         State.__init__(self, game_mgmt)
 
-    # def update(self, delta_time, actions):
     def update(self, pressed):
         if True in pressed.values():
             new_state = Game(self.game_mgmt)

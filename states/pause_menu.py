@@ -1,8 +1,11 @@
+import json
+
 import pygame as pg
 
 from global_variables import *
 from states.state import State
-# from states.party import PartyMenu
+from states.controls_menu import ControlsMenu
+from tools import *
 
 
 class PauseMenu(State):
@@ -33,22 +36,21 @@ class PauseMenu(State):
         # render the gameworld behind the menu, which is right before the pause menu on the stack
         # self.game.state_stack[-2].display(display)
         self.prev_state.display(screen)
+        display_grey_filter(screen)
         screen.blit(self.menu_img, self.menu_rect)
         screen.blit(self.cursor_img, self.cursor_rect)
 
     def transition_state(self):
         if self.menu_options[self.index] == "Party":
-            # new_state = PartyMenu(self.game)
-            # new_state.enter_state()
-            pass
+            new_state = ControlsMenu(self.game_mgmt)
+            new_state.enter_state()
         elif self.menu_options[self.index] == "Items":
             pass  # TO-DO
         elif self.menu_options[self.index] == "Magic":
             pass  # TO-DO
         elif self.menu_options[self.index] == "Exit":
-            pass
-            # while len(self.game.state_stack) > 1:
-            #     self.game.state_stack.pop()
+            while len(self.game_mgmt.state_stack) > 1:
+                self.game_mgmt.state_stack.pop()
 
     def update_cursor(self, pressed):
         if pg.K_DOWN in pressed and pressed[pg.K_DOWN]:
@@ -56,7 +58,3 @@ class PauseMenu(State):
         elif pg.K_UP in pressed and pressed[pg.K_UP]:
             self.index = (self.index - 1) % len(self.menu_options)
         self.cursor_rect.y = self.cursor_pos_y + (self.index * 32)
-
-
-
-
