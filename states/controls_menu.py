@@ -1,5 +1,7 @@
 import json
 
+import pygame
+
 from states.state import State
 from tools import *
 
@@ -17,8 +19,16 @@ class ControlsMenu(State):
         self.read_controls_file()
 
     def update(self, pressed):
+        if pg.K_ESCAPE in pressed and pressed[pg.K_ESCAPE]:
+            self.exit_state()
+
         self.update_cursor(pressed)
         self.change_player(pressed)
+
+        player_controls = self.game_mgmt.controls_father if self.player == "Father" else self.game_mgmt.controls_son
+        for i, control_name in enumerate(player_controls, start=1):
+            self.controls_rect[control_name] = None
+
         self.select(pressed)
         self.game_mgmt.reset_keys()
 
@@ -41,8 +51,10 @@ class ControlsMenu(State):
                 color = "grey"
             elif i == self.index + 1 and not self.selected:
                 color = "white"
-            else:
+            elif i == self.index + 1 and control_name == self.selected:
                 color = "red"
+            else:
+                color = "green"
             image.fill(color)
             self.controls_rect[control_name] = {"image": image, "rect": image.get_rect(topleft=(90, i*80 + 80))}
 
@@ -80,13 +92,36 @@ class ControlsMenu(State):
     def update_cursor(self, pressed):
         if pg.K_DOWN in pressed and pressed[pg.K_DOWN]:
             self.index = (self.index + 1) % len(self.game_mgmt.controls_father)
+            self.selected = False
         elif pg.K_UP in pressed and pressed[pg.K_UP]:
             self.index = (self.index - 1) % len(self.game_mgmt.controls_father)
+            self.selected = False
 
     def change_player(self, pressed):
         if pg.K_LEFT in pressed and pressed[pg.K_LEFT] or pg.K_RIGHT in pressed and pressed[pg.K_RIGHT]:
             self.player = "Father" if self.player == "Son" else "Son"
+            self.selected = False
 
     def select(self, pressed):
-        if pg.K_RETURN in pressed and pressed[pg.K_RETURN]:
-            self.selected = not self.selected
+        if pg.K_RETURN in pressed and pressed[pg.K_RETURN] is True:
+            self.selected = list(self.controls_rect.keys())[self.index]
+
+        elif self.selected and pg.K_RETURN in pressed and pressed[pg.K_RETURN] is True:
+            self.selected = False
+
+        elif self.selected and pressed and list(pressed.keys())[0] not in [pg.K_RETURN, pg.K_UP, pg.K_DOWN, pg.K_LEFT,
+                                                                           pg.K_RIGHT]:
+            player_controls = self.game_mgmt.controls_father if self.player == "Father" else self.game_mgmt.controls_son
+            key = list(pressed.keys())[0]
+            player_controls[self.selected] = key
+            self.selected = False
+
+    def new_control(self, pressed):
+        if self.selected and pressed and True in pressed.values() and pg.K_RETURN not in pressed.keys():
+            print(pressed)
+            key = list(pressed)[0]
+            if key not in list(self.game_mgmt.controls_father.values()) + list(self.game_mgmt.controls_son.values()):
+                player_controls = self.game_mgmt.controls_father if self.player == "Father" \
+                    else self.game_mgmt.controls_son
+                player_controls[key]
+                # print(f"{key} != {list(self.game_mgmt.controls_father.values())} and {list(self.game_mgmt.controls_son.values())}")

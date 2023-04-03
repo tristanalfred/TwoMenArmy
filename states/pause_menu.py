@@ -26,9 +26,9 @@ class PauseMenu(State):
 
     def update(self, pressed):
         self.update_cursor(pressed)
-        if pg.K_m in pressed and pressed[pg.K_m]:
+        if pg.K_RETURN in pressed and pressed[pg.K_RETURN]:
             self.transition_state()
-        if pg.K_p in pressed and pressed[pg.K_p]:
+        if pg.K_ESCAPE in pressed and pressed[pg.K_ESCAPE]:
             self.exit_state()
         self.game_mgmt.reset_keys()
 

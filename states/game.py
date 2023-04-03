@@ -58,7 +58,8 @@ class Game(State):
         """
         Update the state of the game and entities (ex : move a player)
         """
-        if pg.K_p in pressed and pressed[pg.K_p]:
+        # Open pause menu
+        if pg.K_ESCAPE in pressed and pressed[pg.K_ESCAPE]:
             self.game_mgmt.reset_keys()
             new_state = PauseMenu(self.game_mgmt)
             new_state.enter_state()
