@@ -26,7 +26,7 @@ def find_closest_interaction(all_interactions, player):
 
     if distance_interaction:
         closest_interaction_accessible = min(distance_interaction, key=distance_interaction.get)
-        if type(player).__name__ == "Father":
+        if str.lower(type(player).__name__) == FATHER:
             closest_interaction_accessible.accessible_by_father = True
         else:
             closest_interaction_accessible.accessible_by_son = True
@@ -34,7 +34,7 @@ def find_closest_interaction(all_interactions, player):
 
     for interaction in all_interactions:
         if interaction and interaction != closest_interaction_accessible:
-            if type(player).__name__ == "Father":
+            if str.lower(type(player).__name__) == FATHER:
                 interaction.accessible_by_father = False
             else:
                 interaction.accessible_by_son = False

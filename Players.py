@@ -3,7 +3,6 @@ import datetime
 from animation import AnimateSprite
 
 from Projectile import Projectile
-from global_variables import *
 from tools import *
 
 
@@ -111,9 +110,8 @@ class Player(Alive):
 
 class Father(Player):
     def __init__(self, game, x, y):
-        super().__init__(game, "father", x, y)
-        self.controls = {TOP: pg.K_z, DOWN: pg.K_s, LEFT: pg.K_q, RIGHT: pg.K_d,
-                         "attack": pg.K_SPACE, "interaction": pg.K_e}
+        super().__init__(game, FATHER, x, y)
+        self.controls = game.game_mgmt.controls_father
 
     def activate(self, pressed):
         if pressed.get(self.controls["interaction"]):
@@ -124,10 +122,9 @@ class Father(Player):
 
 class Son(Player):
     def __init__(self, game, x, y):
-        super().__init__(game, "son", x, y)
+        super().__init__(game, SON, x, y)
         self.weight = 8
-        self.controls = {TOP: pg.K_UP, DOWN: pg.K_DOWN, LEFT: pg.K_LEFT, RIGHT: pg.K_RIGHT,
-                         "attack": pg.K_KP0, "interaction": pg.K_KP1}
+        self.controls = game.game_mgmt.controls_son
 
     def activate(self, pressed):
         if pressed.get(self.controls["interaction"]):

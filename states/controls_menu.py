@@ -13,10 +13,7 @@ class ControlsMenu(State):
         self.controls_rect = {}
         self.index = 0
         self.selected = False
-        self.player = "Father"
-
-        self.create_controls_file()
-        self.read_controls_file()
+        self.player = FATHER
 
     def update(self, pressed):
         if pg.K_ESCAPE in pressed and pressed[pg.K_ESCAPE]:
@@ -42,7 +39,7 @@ class ControlsMenu(State):
             image.get_rect(topleft=(0, 40)), f"<-          CONTROLS   {str.upper(self.player)}         ->")
 
         # Display a rectangle for each command
-        player_controls = self.game_mgmt.controls_father if self.player == "Father" else self.game_mgmt.controls_son
+        player_controls = self.game_mgmt.controls_father if self.player == FATHER else self.game_mgmt.controls_son
         for i, control_name in enumerate(player_controls, start=1):
             image = pg.Surface((900, 40))
             if i != self.index + 1:
@@ -68,32 +65,9 @@ class ControlsMenu(State):
         """
         Load the controls of the correct player to be used until the other one is selected
         """
-        player_controls = self.game_mgmt.controls_father if self.player == "Father" else self.game_mgmt.controls_son
+        player_controls = self.game_mgmt.controls_father if self.player == FATHER else self.game_mgmt.controls_son
         for i, control_name in enumerate(player_controls, start=1):
             self.controls_rect[control_name] = None
-
-    def create_controls_file(self):
-        controls = {"TOP FATHER": 122, "DOWN FATHER": 115, "LEFT FATHER": 113, "RIGHT FATHER": 100,
-                    "ATTACK FATHER": 32, "INTERACTION FATHER": 101, "PAUSE FATHER": 112,
-                    "TOP SON": 1073741906, "DOWN SON": 1073741905, "LEFT SON": 1073741904, "RIGHT SON": 1073741903,
-                    "ATTACK SON": 1073741922, "INTERACTION SON": 1073741913, "PAUSE SON": 1073741914}
-
-        if not os.path.exists(os.path.join(CURRENT_DIRECTORY, CONTROLS_FILE)):
-            with open(os.path.join(CURRENT_DIRECTORY, CONTROLS_FILE), 'w') as f:
-                json.dump(controls, f)
-
-    def read_controls_file(self):
-        if os.path.exists(os.path.join(CURRENT_DIRECTORY, CONTROLS_FILE)):
-            with open('controls_file.json', 'r') as f:
-                json_object = json.load(f)
-                self.assign_initial_controls(json_object)
-
-    def assign_initial_controls(self, controls):
-        for action, key in controls.items():
-            if "FATHER" in action:
-                self.game_mgmt.controls_father[action] = key
-            else:
-                self.game_mgmt.controls_son[action] = key
 
     def update_cursor(self, pressed):
         if pg.K_DOWN in pressed and pressed[pg.K_DOWN]:
@@ -105,7 +79,7 @@ class ControlsMenu(State):
 
     def change_player(self, pressed):
         if pg.K_LEFT in pressed and pressed[pg.K_LEFT] or pg.K_RIGHT in pressed and pressed[pg.K_RIGHT]:
-            self.player = "Father" if self.player == "Son" else "Son"
+            self.player = FATHER if self.player == SON else SON
             self.selected = False
 
     def select(self, pressed):
@@ -119,7 +93,16 @@ class ControlsMenu(State):
 
         # Change the control selected
         elif self.selected and pressed and list(pressed.keys())[0] not in INTERFACE_CONTROLS:
-            player_controls = self.game_mgmt.controls_father if self.player == "Father" else self.game_mgmt.controls_son
+            player_controls = self.game_mgmt.controls_father if self.player == FATHER else self.game_mgmt.controls_son
             key = list(pressed.keys())[0]
             player_controls[self.selected] = key
             self.selected = False
+            self.save_new_controls()
+
+    def save_new_controls(self):
+        if self.player == FATHER:
+            with open(os.path.join(HOME_DIRECTORY, CONTROLS_FILE_FATHER), 'w') as f:
+                json.dump(self.game_mgmt.controls_father, f)
+        else:
+            with open(os.path.join(HOME_DIRECTORY, CONTROLS_FILE_SON), 'w') as f:
+                json.dump(self.game_mgmt.controls_son, f)

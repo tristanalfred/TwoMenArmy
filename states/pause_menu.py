@@ -1,8 +1,3 @@
-import json
-
-import pygame as pg
-
-from global_variables import *
 from states.state import State
 from states.controls_menu import ControlsMenu
 from tools import *
@@ -13,13 +8,13 @@ class PauseMenu(State):
         State.__init__(self, game_mgmt)
         self.game_mgmt = game_mgmt
         # Set the menu
-        self.menu_img = pg.image.load(os.path.join(CURRENT_DIRECTORY, "assets", "menu", "menu.png"))
+        self.menu_img = pg.image.load(os.path.join(HOME_DIRECTORY, "assets", "menu", "menu.png"))
         self.menu_rect = self.menu_img.get_rect()
         self.menu_rect.center = (SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
         # Set the cursor and menu states
         self.menu_options = {0: "Party", 1: "Items", 2: "Magic", 3: "Exit"}
         self.index = 0
-        self.cursor_img = pg.image.load(os.path.join(CURRENT_DIRECTORY, "assets", "menu", "cursor.png"))
+        self.cursor_img = pg.image.load(os.path.join(HOME_DIRECTORY, "assets", "menu", "cursor.png"))
         self.cursor_rect = self.cursor_img.get_rect()
         self.cursor_pos_y = self.menu_rect.y + 38
         self.cursor_rect.x, self.cursor_rect.y = self.menu_rect.x + 10, self.cursor_pos_y

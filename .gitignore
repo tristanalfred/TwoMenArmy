@@ -3,4 +3,5 @@ venv/
 db.sqlite3
 **/__pycache__
 **/__pycache__/**
-controls_file.json
+controls_file_father.json
+controls_file_son.json
