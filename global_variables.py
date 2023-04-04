@@ -15,3 +15,4 @@ DOWN = "bottom"
 LEFT_BOTTOM = "leftbottom"
 SIZE_HEALTH_BAR = 70
 CHARACTER_SIZE = 70
+CONTROLS_FILE = "controls_file.json"

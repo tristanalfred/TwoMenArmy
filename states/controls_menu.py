@@ -1,9 +1,9 @@
 import json
-
-import pygame
-
 from states.state import State
 from tools import *
+
+
+INTERFACE_CONTROLS = [pg.K_RETURN, pg.K_UP, pg.K_DOWN, pg.K_LEFT, pg.K_RIGHT]
 
 
 class ControlsMenu(State):
@@ -24,11 +24,7 @@ class ControlsMenu(State):
 
         self.update_cursor(pressed)
         self.change_player(pressed)
-
-        player_controls = self.game_mgmt.controls_father if self.player == "Father" else self.game_mgmt.controls_son
-        for i, control_name in enumerate(player_controls, start=1):
-            self.controls_rect[control_name] = None
-
+        self.load_player_controls()
         self.select(pressed)
         self.game_mgmt.reset_keys()
 
@@ -41,10 +37,12 @@ class ControlsMenu(State):
         color = "white"
         image.fill(color)
         screen.blit(image, image.get_rect(topleft=(0, 40)))
-        display_text_middle_rect(self.game_mgmt, image.get_rect(topleft=(0, 40)), "<-          CONTROLS          ->")
+        display_text_middle_rect(
+            self.game_mgmt,
+            image.get_rect(topleft=(0, 40)), f"<-          CONTROLS   {str.upper(self.player)}         ->")
 
-        player_controls = self.game_mgmt.controls_father if self.player == "Father" else self.game_mgmt.controls_son
         # Display a rectangle for each command
+        player_controls = self.game_mgmt.controls_father if self.player == "Father" else self.game_mgmt.controls_son
         for i, control_name in enumerate(player_controls, start=1):
             image = pg.Surface((900, 40))
             if i != self.index + 1:
@@ -54,7 +52,7 @@ class ControlsMenu(State):
             elif i == self.index + 1 and control_name == self.selected:
                 color = "red"
             else:
-                color = "green"
+                color = "green"  # Not supposed to happen
             image.fill(color)
             self.controls_rect[control_name] = {"image": image, "rect": image.get_rect(topleft=(90, i*80 + 80))}
 
@@ -63,26 +61,34 @@ class ControlsMenu(State):
             screen.blit(obj['image'], obj['rect'])
             display_text_middle_rect(
                 self.game_mgmt, obj['rect'],
-                f"{action}    -    {str.capitalize(pg.key.name(player_controls[action]))}")
+                f"{action.split(' ')[0]}    -    {str.capitalize(pg.key.name(player_controls[action]))}")
         self.controls_rect = {}
 
-    def create_controls_file(self):
-        controls = {"TOP_FATHER": 122, "DOWN_FATHER": 115, "LEFT_FATHER": 113, "RIGHT_FATHER": 100,
-                    "ATTACK_FATHER": 32, "INTERACTION_FATHER": 101, "PAUSE_FATHER": 112,
-                    "TOP_SON": 1073741906, "DOWN_SON": 1073741905, "LEFT_SON": 1073741904, "RIGHT_SON": 1073741903,
-                    "ATTACK_SON": 1073741922, "INTERACTION_SON": 1073741913, "PAUSE_SON": 1073741914}
+    def load_player_controls(self):
+        """
+        Load the controls of the correct player to be used until the other one is selected
+        """
+        player_controls = self.game_mgmt.controls_father if self.player == "Father" else self.game_mgmt.controls_son
+        for i, control_name in enumerate(player_controls, start=1):
+            self.controls_rect[control_name] = None
 
-        if not os.path.exists(os.path.join(CURRENT_DIRECTORY, "controls_file.json")):
-            with open(os.path.join(CURRENT_DIRECTORY, "controls_file.json"), 'w') as f:
+    def create_controls_file(self):
+        controls = {"TOP FATHER": 122, "DOWN FATHER": 115, "LEFT FATHER": 113, "RIGHT FATHER": 100,
+                    "ATTACK FATHER": 32, "INTERACTION FATHER": 101, "PAUSE FATHER": 112,
+                    "TOP SON": 1073741906, "DOWN SON": 1073741905, "LEFT SON": 1073741904, "RIGHT SON": 1073741903,
+                    "ATTACK SON": 1073741922, "INTERACTION SON": 1073741913, "PAUSE SON": 1073741914}
+
+        if not os.path.exists(os.path.join(CURRENT_DIRECTORY, CONTROLS_FILE)):
+            with open(os.path.join(CURRENT_DIRECTORY, CONTROLS_FILE), 'w') as f:
                 json.dump(controls, f)
 
     def read_controls_file(self):
-        if os.path.exists(os.path.join(CURRENT_DIRECTORY, "controls_file.json")):
+        if os.path.exists(os.path.join(CURRENT_DIRECTORY, CONTROLS_FILE)):
             with open('controls_file.json', 'r') as f:
                 json_object = json.load(f)
-                self.assign_controls(json_object)
+                self.assign_initial_controls(json_object)
 
-    def assign_controls(self, controls):
+    def assign_initial_controls(self, controls):
         for action, key in controls.items():
             if "FATHER" in action:
                 self.game_mgmt.controls_father[action] = key
@@ -103,25 +109,17 @@ class ControlsMenu(State):
             self.selected = False
 
     def select(self, pressed):
+        # Select the control to change
         if pg.K_RETURN in pressed and pressed[pg.K_RETURN] is True:
             self.selected = list(self.controls_rect.keys())[self.index]
 
+        # Deselect if enter is pressed again
         elif self.selected and pg.K_RETURN in pressed and pressed[pg.K_RETURN] is True:
             self.selected = False
 
-        elif self.selected and pressed and list(pressed.keys())[0] not in [pg.K_RETURN, pg.K_UP, pg.K_DOWN, pg.K_LEFT,
-                                                                           pg.K_RIGHT]:
+        # Change the control selected
+        elif self.selected and pressed and list(pressed.keys())[0] not in INTERFACE_CONTROLS:
             player_controls = self.game_mgmt.controls_father if self.player == "Father" else self.game_mgmt.controls_son
             key = list(pressed.keys())[0]
             player_controls[self.selected] = key
             self.selected = False
-
-    def new_control(self, pressed):
-        if self.selected and pressed and True in pressed.values() and pg.K_RETURN not in pressed.keys():
-            print(pressed)
-            key = list(pressed)[0]
-            if key not in list(self.game_mgmt.controls_father.values()) + list(self.game_mgmt.controls_son.values()):
-                player_controls = self.game_mgmt.controls_father if self.player == "Father" \
-                    else self.game_mgmt.controls_son
-                player_controls[key]
-                # print(f"{key} != {list(self.game_mgmt.controls_father.values())} and {list(self.game_mgmt.controls_son.values())}")

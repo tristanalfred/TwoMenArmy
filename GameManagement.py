@@ -16,10 +16,10 @@ class GameManagement:
         self.text_font_screen = pg.font.SysFont("georgia", 50)
         self.text_font_object = pg.font.SysFont("georgia", 36)
         self.load_states()
-        self.controls_father = {"TOP_FATHER": None, "DOWN_FATHER": None, "LEFT_FATHER": None, "RIGHT_FATHER": None,
-                                "ATTACK_FATHER": None, "INTERACTION_FATHER": None, "PAUSE_FATHER": None}
-        self.controls_son = {"TOP_SON": None, "DOWN_SON": None, "LEFT_SON": None, "RIGHT_SON": None,
-                             "ATTACK_SON": None, "INTERACTION_SON": None, "PAUSE_SON": None}
+        self.controls_father = {"TOP FATHER": None, "DOWN FATHER": None, "LEFT FATHER": None, "RIGHT FATHER": None,
+                                "ATTACK FATHER": None, "INTERACTION FATHER": None, "PAUSE FATHER": None}
+        self.controls_son = {"TOP SON": None, "DOWN SON": None, "LEFT SON": None, "RIGHT SON": None,
+                             "ATTACK SON": None, "INTERACTION SON": None, "PAUSE SON": None}
 
     def handling_events(self):
         """
