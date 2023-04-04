@@ -14,7 +14,7 @@ class Rock(Obstacle):
     def __init__(self, game, x, y):
         super().__init__()
         self.game = game
-        self.image = pg.transform.scale(pg.image.load(os.path.join(CURRENT_DIRECTORY, "assets", "rock.png")),
+        self.image = pg.transform.scale(pg.image.load(os.path.join(HOME_DIRECTORY, "assets", "rock.png")),
                                             (40, 40))
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -26,7 +26,7 @@ class Door(Obstacle):
         super().__init__()
         self.game = game
         self.closed = True
-        self.image = pg.Surface((50, 120))
+        self.image = pg.Surface((40, 120))
         self.color = color
         self.image.fill(self.color)
         self.rect = self.image.get_rect(topleft=(x, y))
@@ -59,7 +59,7 @@ class Levier(Obstacle, Interaction):
 
     def show_accessible(self):
         draw_borders_rect(self.game.game_mgmt, self)
-        # display_text_object(self.game, self, "E")
+        # display_text_under_object(self.game, self, "E")
 
     def activate(self):
         self.door.open()

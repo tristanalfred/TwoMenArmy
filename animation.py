@@ -10,10 +10,10 @@ class AnimateSprite(pg.sprite.Sprite):
         self.sprite_name = sprite_name
         self.action = action
         self.direction = direction
-        # self.image = pg.image.load(os.path.join(CURRENT_DIRECTORY, "assets", entity_type, sprite_name, update_actions,
+        # self.image = pg.image.load(os.path.join(HOME_DIRECTORY, "assets", entity_type, sprite_name, update_actions,
         #                                             direction, f"{sprite_name}_{update_actions}_{direction}_0.png"))
         self.image = pg.transform.scale(
-            pg.image.load(os.path.join(CURRENT_DIRECTORY, "assets", entity_type, sprite_name, action, direction,
+            pg.image.load(os.path.join(HOME_DIRECTORY, "assets", entity_type, sprite_name, action, direction,
                                            f"{sprite_name}_{action}_{direction}_0.png")), (500, 500))
         self.current_image = 0
         self.images = {}
@@ -39,7 +39,7 @@ def load_animation_images(entity_type, sprite_name, action, direction):
     Load the images of an entity only when the first one is created instead of each entity
     """
     images = []
-    path = os.path.join(CURRENT_DIRECTORY, "assets", entity_type, sprite_name, action, direction)
+    path = os.path.join(HOME_DIRECTORY, "assets", entity_type, sprite_name, action, direction)
 
     for num in range(len(os.listdir(path))):
         images.append(pg.transform.scale(pg.image.load(
@@ -50,8 +50,8 @@ def load_animation_images(entity_type, sprite_name, action, direction):
 
 allowed_animations = {
     "character": {
-        "father": ["idle", "move"],
-        "son": ["idle", "move"]
+        FATHER: ["idle", "move"],
+        SON: ["idle", "move"]
     }
 }
 

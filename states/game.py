@@ -15,7 +15,7 @@ class Game(State):
         State.__init__(self, game_mgmt)
         self.game_mgmt = game_mgmt
         self.background = pg.image.load(
-            os.path.join(CURRENT_DIRECTORY, "assets", "background.png"))  # os.path.join allow windows and linux paths
+            os.path.join(HOME_DIRECTORY, "assets", "background.png"))  # os.path.join allow windows and linux paths
         self.father = None
         self.son = None
         self.all_enemies = pg.sprite.Group()
@@ -58,7 +58,8 @@ class Game(State):
         """
         Update the state of the game and entities (ex : move a player)
         """
-        if pg.K_p in pressed and pressed[pg.K_p]:
+        # Open pause menu
+        if pg.K_ESCAPE in pressed and pressed[pg.K_ESCAPE]:
             self.game_mgmt.reset_keys()
             new_state = PauseMenu(self.game_mgmt)
             new_state.enter_state()
@@ -119,12 +120,9 @@ class Game(State):
         find_closest_interaction(self.all_interactions, self.father)
         find_closest_interaction(self.all_interactions, self.son)
 
-        if (datetime.datetime.now() - self.start_time).seconds < 2 and not self.game_mgmt.pause:
+        if (datetime.datetime.now() - self.start_time).seconds < 2:
             display_text_screen(self.game_mgmt, self.level.name)
             pass
-
-        if self.game_mgmt.pause:
-            display_text_screen(self.game_mgmt, "Pause")
 
         if self.game_ended:
             display_text_screen(self.game_mgmt, "You win !")

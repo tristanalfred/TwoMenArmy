@@ -1,5 +1,5 @@
+import json
 import sys
-from global_variables import *
 from states.title import Title
 from tools import *
 
@@ -8,7 +8,6 @@ class GameManagement:
     def __init__(self):
         self.screen = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.running = True
-        self.pause = False
         self.state_stack = []
         self.title_screen = None
         self.pressed = {}
@@ -16,6 +15,11 @@ class GameManagement:
         self.text_font_screen = pg.font.SysFont("georgia", 50)
         self.text_font_object = pg.font.SysFont("georgia", 36)
         self.load_states()
+        self.controls_father = {}
+        self.controls_son = {}
+
+        self.create_controls_files()
+        self.read_controls_file()
 
     def handling_events(self):
         """
@@ -27,9 +31,7 @@ class GameManagement:
                 self.running = False
                 pg.quit()
                 sys.exit()
-            elif event.type == pg.KEYDOWN and event.key == pg.K_KP2:
-                self.pause = not self.pause
-            elif event.type == pg.KEYDOWN and not self.pause:
+            elif event.type == pg.KEYDOWN:
                 self.pressed[event.key] = True
             elif event.type == pg.KEYUP:
                 self.pressed[event.key] = False
@@ -46,6 +48,35 @@ class GameManagement:
         """
         self.state_stack[-1].display(self.screen)
         pg.display.flip()
+
+    def create_controls_files(self):
+        controls_father = {TOP: pg.K_z, DOWN: pg.K_s, LEFT: pg.K_q, RIGHT: pg.K_d, "attack": pg.K_SPACE,
+                           "interaction": pg.K_e, "pause": pg.K_ESCAPE}
+        controls_son = {TOP: pg.K_UP, DOWN: pg.K_DOWN, LEFT: pg.K_LEFT, RIGHT: pg.K_RIGHT, "attack": pg.K_KP0,
+                        "interaction": pg.K_KP1, "pause": pg.K_KP2}
+
+        # Create father control file
+        if not os.path.exists(os.path.join(HOME_DIRECTORY, CONTROLS_FILE_FATHER)):
+            with open(os.path.join(HOME_DIRECTORY, CONTROLS_FILE_FATHER), 'w') as f:
+                json.dump(controls_father, f)
+
+        # Create son control file
+        if not os.path.exists(os.path.join(HOME_DIRECTORY, CONTROLS_FILE_SON)):
+            with open(os.path.join(HOME_DIRECTORY, CONTROLS_FILE_SON), 'w') as f:
+                json.dump(controls_son, f)
+
+    def read_controls_file(self):
+        if os.path.exists(os.path.join(HOME_DIRECTORY, CONTROLS_FILE_FATHER)):
+            with open(CONTROLS_FILE_FATHER, 'r') as f:
+                json_object = json.load(f)
+                for action, key in json_object.items():
+                    self.controls_father[action] = key
+
+        if os.path.exists(os.path.join(HOME_DIRECTORY, CONTROLS_FILE_SON)):
+            with open(CONTROLS_FILE_SON, 'r') as f:
+                json_object = json.load(f)
+            for action, key in json_object.items():
+                self.controls_son[action] = key
 
     def reset_keys(self):
         self.pressed = {}
