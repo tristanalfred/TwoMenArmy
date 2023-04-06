@@ -1,4 +1,4 @@
-from global_variables import *
+from particles import HitParticle
 from tools import *
 
 
@@ -30,12 +30,19 @@ class Projectile(pg.sprite.Sprite):
         if obj_collided:
             if obj_collided not in self.game.all_obstacles:
                 obj_collided.damage_incured(self.player.attack)
+            self.create_damages_particle(obj_collided)
             self.remove()
 
         # Delete the projectile if he left the screen
         if self.rect.x - self.rect.x < 0 or self.rect.x > SCREEN_WIDTH \
                 or self.rect.y - self.rect.y < 0 or self.rect.y > SCREEN_HEIGHT:
             self.remove()
+
+    def create_damages_particle(self, obj_collided):
+        intersection = self.rect.clip(obj_collided.rect)
+        x = intersection.x + (intersection.width / 2)
+        y = intersection.y + (intersection.height / 2)
+        self.game.all_particles.append(HitParticle(self.game, (x, y)))
 
     def remove(self):
         self.player.all_projectiles.remove(self)

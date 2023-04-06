@@ -44,10 +44,11 @@ class Player(Alive):
         self.controls = {TOP: None, DOWN: None, LEFT: None, RIGHT: None, "attack": None}
         self.controls_delay = {"attack": {"min_ms_delay": 200000, "last_use": datetime.datetime.now()}}
 
-    def update_actions(self, pressed):
+    def update(self, pressed):
         self.move(pressed)
         self.launch_projectile(pressed)
         self.activate(pressed)
+        self.animate()
 
     def activate(self, pressed):
         pass
