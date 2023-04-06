@@ -5,6 +5,7 @@ from Enemies import *
 from Obstacles import *
 from Players import Father, Son
 from global_variables import *
+from particles import DestroyGroupParticle
 from states.pause_menu import PauseMenu
 from states.state import State
 from tools import *
@@ -78,6 +79,7 @@ class Game(State):
         # Update Enemies
         for enemy in self.all_enemies:
             if enemy.health <= 0:
+                self.all_particles.append(DestroyGroupParticle(self, enemy.rect.center))
                 self.all_enemies.remove(enemy)
 
         # Update particles
@@ -126,7 +128,7 @@ class Game(State):
         find_closest_interaction(self.all_interactions, self.son)
 
         for particle in self.all_particles:
-            pg.draw.circle(screen, particle.color, particle.center, particle.radius, width=particle.width)
+            particle.display()
 
         if (datetime.datetime.now() - self.start_time).seconds < 2:
             display_text_screen(self.game_mgmt, self.level.name)
