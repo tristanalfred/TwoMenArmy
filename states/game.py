@@ -5,6 +5,7 @@ from Enemies import *
 from Obstacles import *
 from Players import Father, Son
 from global_variables import *
+from particles import DestroyGroupParticle
 from states.pause_menu import PauseMenu
 from states.state import State
 from tools import *
@@ -21,6 +22,7 @@ class Game(State):
         self.all_enemies = pg.sprite.Group()
         self.all_obstacles = pg.sprite.Group()
         self.all_interactions = pg.sprite.Group()
+        self.all_particles = []
         self.actual_level = 1
         self.total_levels = 2
         self.level = None
@@ -64,22 +66,27 @@ class Game(State):
             new_state = PauseMenu(self.game_mgmt)
             new_state.enter_state()
 
-        self.father.update_actions(pressed)
-        self.son.update_actions(pressed)
+        # Update characters
+        self.father.update(pressed)
+        self.son.update(pressed)
 
-        self.father.animate()
-        self.son.animate()
-
+        # Update projectiles
         for projectile in self.father.all_projectiles:
             projectile.move()
-
         for projectile in self.son.all_projectiles:
             projectile.move()
 
+        # Update Enemies
         for enemy in self.all_enemies:
             if enemy.health <= 0:
+                self.all_particles.append(DestroyGroupParticle(self, enemy.rect.center))
                 self.all_enemies.remove(enemy)
 
+        # Update particles
+        for particle in self.all_particles:
+            particle.update()
+
+        # Open the exit
         exit_level = find_object_group(self.all_obstacles, ExitLevel)
         if len(self.all_enemies) == 0:
             if exit_level:
@@ -119,6 +126,9 @@ class Game(State):
 
         find_closest_interaction(self.all_interactions, self.father)
         find_closest_interaction(self.all_interactions, self.son)
+
+        for particle in self.all_particles:
+            particle.display()
 
         if (datetime.datetime.now() - self.start_time).seconds < 2:
             display_text_screen(self.game_mgmt, self.level.name)
