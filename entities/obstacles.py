@@ -14,7 +14,7 @@ class Rock(Obstacle):
     def __init__(self, game, x, y):
         super().__init__()
         self.game = game
-        self.image = pg.transform.scale(pg.image.load(os.path.join(HOME_DIRECTORY, "assets", "rock.png")), (40, 40))
+        self.image = pg.transform.scale(pg.image.load(os.path.join(HOME_DIRECTORY, "rock.png")), (40, 40))
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y

@@ -1,11 +1,10 @@
 import datetime
 import importlib
 
-from Enemies import *
-from Obstacles import *
-from Players import Father, Son
-from global_variables import *
-from particles import DestroyGroupParticle
+from entities.enemies import *
+from entities.obstacles import *
+from entities.players import Father, Son
+from entities.particles import DestroyGroupParticle
 from states.pause_menu import PauseMenu
 from states.state import State
 from tools import *
@@ -16,7 +15,7 @@ class Game(State):
         State.__init__(self, game_mgmt)
         self.game_mgmt = game_mgmt
         self.background = pg.image.load(
-            os.path.join(HOME_DIRECTORY, "assets", "background.png"))  # os.path.join allow windows and linux paths
+            os.path.join(HOME_DIRECTORY, "background.png"))  # os.path.join allow windows and linux paths
         self.father = None
         self.son = None
         self.all_enemies = pg.sprite.Group()

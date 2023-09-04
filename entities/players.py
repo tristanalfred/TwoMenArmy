@@ -2,7 +2,7 @@ import datetime
 
 from animation import AnimateSprite
 
-from Projectile import Projectile
+from entities.projectile import Projectile
 from tools import *
 
 

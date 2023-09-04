@@ -1,4 +1,4 @@
-from particles import HitParticle
+from entities.particles import HitParticle
 from tools import *
 
 
@@ -8,7 +8,7 @@ class Projectile(pg.sprite.Sprite):
         self.game = game
         self.velocity = 10
         self.damage = 10
-        self.image = pg.image.load(os.path.join(HOME_DIRECTORY, "assets", "projectile.png"))
+        self.image = pg.image.load(os.path.join(HOME_DIRECTORY, "projectile.png"))
         self.rect = self.image.get_rect()
         self.rect.x = player.rect.center[0] - self.rect.center[0]
         self.rect.y = player.rect.center[1] - self.rect.center[1]

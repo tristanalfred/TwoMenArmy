@@ -1,6 +1,6 @@
 import pygame as pg
 
-from Players import Alive
+from entities.players import Alive
 from global_variables import *
 
 
@@ -20,7 +20,7 @@ class Enemy(Alive):
 class PunchingBall(Enemy):
     def __init__(self, game, x, y):
         super().__init__(game, "punching_ball")
-        self.image = pg.image.load(os.path.join(HOME_DIRECTORY, "assets", "punching_ball.jpg"))
+        self.image = pg.image.load(os.path.join(HOME_DIRECTORY, "punching_ball.jpg"))
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
