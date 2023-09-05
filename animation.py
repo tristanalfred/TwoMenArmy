@@ -13,7 +13,7 @@ class AnimateSprite(pg.sprite.Sprite):
         # self.image = pg.image.load(os.path.join(HOME_DIRECTORY, entity_type, sprite_name, update_actions,
         #                                             direction, f"{sprite_name}_{update_actions}_{direction}_0.png"))
         self.image = pg.transform.scale(
-            pg.image.load(os.path.join(HOME_DIRECTORY, entity_type, sprite_name, action, direction,
+            pg.image.load(os.path.join(ASSETS_DIRECTORY, entity_type, sprite_name, action, direction,
                                            f"{sprite_name}_{action}_{direction}_0.png")), (500, 500))
         self.current_image = 0
         self.images = {}
@@ -39,7 +39,7 @@ def load_animation_images(entity_type, sprite_name, action, direction):
     Load the images of an entity only when the first one is created instead of each entity
     """
     images = []
-    path = os.path.join(HOME_DIRECTORY, entity_type, sprite_name, action, direction)
+    path = os.path.join(ASSETS_DIRECTORY, entity_type, sprite_name, action, direction)
 
     for num in range(len(os.listdir(path))):
         images.append(pg.transform.scale(pg.image.load(
@@ -55,7 +55,7 @@ allowed_animations = {
     }
 }
 
-directions = [LEFT, LEFT_TOP, TOP, RIGHT_TOP, RIGHT, RIGHTBOTTOM, DOWN, LEFT_BOTTOM]
+directions = [LEFT, LEFT_TOP, TOP, RIGHT_TOP, RIGHT, RIGHT_BOTTOM, DOWN, LEFT_BOTTOM]
 
 animations = {}
 

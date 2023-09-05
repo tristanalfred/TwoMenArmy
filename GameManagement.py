@@ -50,10 +50,10 @@ class GameManagement:
         pg.display.flip()
 
     def create_controls_files(self):
-        controls_father = {TOP: pg.K_z, DOWN: pg.K_s, LEFT: pg.K_q, RIGHT: pg.K_d, "attack": pg.K_SPACE,
-                           "interaction": pg.K_e, "pause": pg.K_ESCAPE}
-        controls_son = {TOP: pg.K_UP, DOWN: pg.K_DOWN, LEFT: pg.K_LEFT, RIGHT: pg.K_RIGHT, "attack": pg.K_KP0,
-                        "interaction": pg.K_KP1, "pause": pg.K_KP2}
+        controls_father = {TOP: pg.K_z, DOWN: pg.K_s, LEFT: pg.K_q, RIGHT: pg.K_d, "distant attack": pg.K_SPACE,
+                           "punch": pg.K_r, "interaction": pg.K_e, "pause": pg.K_ESCAPE}
+        controls_son = {TOP: pg.K_UP, DOWN: pg.K_DOWN, LEFT: pg.K_LEFT, RIGHT: pg.K_RIGHT, "distant attack": pg.K_KP0,
+                        "punch": pg.K_KP3, "interaction": pg.K_KP1, "pause": pg.K_KP2}
 
         # Create father control file
         if not os.path.exists(os.path.join(HOME_DIRECTORY, CONTROLS_FILE_FATHER)):

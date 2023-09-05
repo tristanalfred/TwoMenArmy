@@ -3,7 +3,7 @@ import importlib
 
 from entities.enemies import *
 from entities.obstacles import *
-from entities.players import Father, Son
+from entities.players.players import Father, Son
 from entities.particles import DestroyGroupParticle
 from states.pause_menu import PauseMenu
 from states.state import State
@@ -15,7 +15,7 @@ class Game(State):
         State.__init__(self, game_mgmt)
         self.game_mgmt = game_mgmt
         self.background = pg.image.load(
-            os.path.join(HOME_DIRECTORY, "background.png"))  # os.path.join allow windows and linux paths
+            os.path.join(ASSETS_DIRECTORY, "background.png"))  # os.path.join allow windows and linux paths
         self.father = None
         self.son = None
         self.all_enemies = pg.sprite.Group()
@@ -68,6 +68,8 @@ class Game(State):
         # Update characters
         self.father.update(pressed)
         self.son.update(pressed)
+        for fist in self.father.fists:
+            fist.update()
 
         # Update projectiles
         for projectile in self.father.all_projectiles:
@@ -107,31 +109,40 @@ class Game(State):
         """
         screen.blit(self.background, (0, 0))
 
-        self.father.all_projectiles.draw(screen)
-        self.son.all_projectiles.draw(screen)
-
-        self.all_obstacles.draw(screen)
-
-        self.all_enemies.draw(screen)
-        for enemy in self.all_enemies:
-            enemy.update_health_bar(screen)
-
         # Apply players images
         screen.blit(self.father.image, self.father.rect)
         screen.blit(self.son.image, self.son.rect)
 
+        # Players 's projectiles
+        self.father.all_projectiles.draw(screen)
+        self.son.all_projectiles.draw(screen)
+
         self.father.update_health_bar(screen)
         self.son.update_health_bar(screen)
 
+        # Players 's fists
+        self.father.fists.draw(screen)
+
+        # Enemies
+        self.all_enemies.draw(screen)
+        for enemy in self.all_enemies:
+            enemy.update_health_bar(screen)
+
+        # Obstacles
+        self.all_obstacles.draw(screen)
+
+        # Draw outlines
         find_closest_interaction(self.all_interactions, self.father)
         find_closest_interaction(self.all_interactions, self.son)
 
+        # Particles
         for particle in self.all_particles:
             particle.display()
 
+        # Display level name
         if (datetime.datetime.now() - self.start_time).seconds < 2:
             display_text_screen(self.game_mgmt, self.level.name)
             pass
-
+        # Display end game message
         if self.game_ended:
             display_text_screen(self.game_mgmt, "You win !")

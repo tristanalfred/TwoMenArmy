@@ -1,6 +1,7 @@
 import datetime
 
 from animation import AnimateSprite
+from entities.players.fists import RightFist, LeftFist, BackForth
 
 from entities.projectile import Projectile
 from tools import *
@@ -41,12 +42,26 @@ class Player(Alive):
         self.rect = pg.Rect(x, y, CHARACTER_SIZE, CHARACTER_SIZE)
         self.all_projectiles = pg.sprite.Group()
         self.direction = RIGHT
-        self.controls = {TOP: None, DOWN: None, LEFT: None, RIGHT: None, "attack": None}
-        self.controls_delay = {"attack": {"min_ms_delay": 200000, "last_use": datetime.datetime.now()}}
+        self.controls = {TOP: None, DOWN: None, LEFT: None, RIGHT: None, "distant attack": None, "punch": None}
+        self.controls_delay = {
+            "distant attack":
+                {"min_ms_delay": 200000, "last_use": datetime.datetime.now()},
+            "punch": None
+        }
+
+        # Fists management
+        self.fists = pg.sprite.Group()
+        left_fist = LeftFist(player=self)
+        right_fist = RightFist(player=self)
+        self.fists.add(left_fist)
+        self.fists.add(right_fist)
+        self.last_punch = left_fist
+
 
     def update(self, pressed):
         self.move(pressed)
         self.launch_projectile(pressed)
+        self.punch(pressed)
         self.activate(pressed)
         self.animate()
 
@@ -102,11 +117,22 @@ class Player(Alive):
             self.rect.bottom = obj_collided.rect.top
 
     def launch_projectile(self, pressed):
-        if pressed.get(self.controls["attack"]) \
-            and (datetime.datetime.now() - self.controls_delay["attack"]["last_use"]).microseconds \
-                > self.controls_delay["attack"]["min_ms_delay"]:
+        if pressed.get(self.controls["distant attack"]) \
+            and (datetime.datetime.now() - self.controls_delay["distant attack"]["last_use"]).microseconds \
+                > self.controls_delay["distant attack"]["min_ms_delay"]:
             self.all_projectiles.add(Projectile(self, self.game))
-            self.controls_delay["attack"]["last_use"] = datetime.datetime.now()
+            self.controls_delay["distant attack"]["last_use"] = datetime.datetime.now()
+    
+    def punch(self, pressed):
+        if pressed.get(self.controls["punch"]) \
+                and (self.fists.sprites()[0].backforth == BackForth.NEUTRAL
+                     and self.fists.sprites()[1].backforth == BackForth.NEUTRAL):
+            if self.last_punch == self.fists.sprites()[0]:
+                self.fists.sprites()[0].backforth = BackForth.FORTH
+                self.last_punch = self.fists.sprites()[1]
+            else:
+                self.fists.sprites()[1].backforth = BackForth.FORTH
+                self.last_punch = self.fists.sprites()[0]
 
 
 class Father(Player):

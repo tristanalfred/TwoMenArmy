@@ -40,6 +40,11 @@ def find_closest_interaction(all_interactions, player):
                 interaction.accessible_by_son = False
 
 
+def calculate_distance_rect(rect_1, rect_2):
+    return sqrt((rect_1.center[0] - rect_2.center[0]) ** 2 +
+                (rect_1.center[1] - rect_2.center[1]) ** 2)
+
+
 def find_object_group(group, entity_type, attribute=None, attribute_value=None):
     if not isinstance(entity_type, str):
         entity_type = entity_type.__name__
